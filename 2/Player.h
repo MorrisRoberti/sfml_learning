@@ -12,6 +12,8 @@ private:
     // Attributes
     sf::RectangleShape shape;
     float movementSpeed;
+    int hp;
+    int hpMax;
 
     // Methods
     void initVariables();
@@ -23,6 +25,13 @@ public:
     ~Player();
 
     // Methods
+    void takeDamage(const int damage);
+    void gainHealth(const int health);
+
+    // Accessors
+    const sf::RectangleShape &getShape() const;
+    const int &getHp() const;
+    const int &getMaxHp() const;
 
     // Update
     void updateInput();

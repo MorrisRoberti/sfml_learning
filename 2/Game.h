@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
+#include <sstream>
 
 #include "Player.h"
 #include "Ball.h"
@@ -14,7 +15,11 @@ private:
     sf::RenderWindow *window;
     sf::VideoMode videoMode;
     sf::Event event;
+    sf::Font font;
+    sf::Text guiText;
+    sf::Text title;
     bool endGame;
+    int points;
 
     Player player;
 
@@ -26,6 +31,8 @@ private:
     // Methods
     void initWindow();
     void initVariables();
+    void initFonts();
+    void initText();
 
 public:
     // Constructors / Destructor
@@ -43,8 +50,11 @@ public:
     void spawnBalls();
 
     // Update
+    void updateCollision();
+    void updateGui();
     void update();
 
     // Render
+    void renderGui(sf::RenderWindow *target);
     void render();
 };

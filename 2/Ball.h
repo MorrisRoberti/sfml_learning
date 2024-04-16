@@ -6,11 +6,20 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 
+enum BallTypes
+{
+    DEFAULT = 0,
+    DAMAGING,
+    HEALING,
+    NROFTYPES
+};
+
 class Ball
 {
 private:
     // Attributes
     sf::CircleShape shape;
+    int type;
 
     // Methods
     void initVariables();
@@ -18,8 +27,14 @@ private:
 
 public:
     // Constructor / Destructors
-    Ball(const sf::RenderWindow *window);
+    Ball(const sf::RenderWindow *window, int type);
     ~Ball();
+
+    // Accessor
+    const sf::CircleShape &getShape() const;
+    const int &getType() const;
+
+    // Methods
 
     // Update
     void update();
