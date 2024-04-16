@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
@@ -10,14 +12,22 @@ class Player
 {
 private:
     // Attributes
-    sf::RectangleShape shape;
     float movementSpeed;
-    int hp;
-    int hpMax;
+    float hp;
+    float hpMax;
+
+    sf::Texture fullHeartTexture;
+    sf::Texture halfHeartTexture;
+    sf::Texture playerTexture;
+
+    std::vector<sf::Sprite> heartSprites;
+    sf::Sprite heartSprite;
+    sf::Sprite playerSprite;
 
     // Methods
     void initVariables();
-    void initShape();
+    void initTextures();
+    void initSprites();
 
 public:
     // Constructors / Destructor
@@ -25,17 +35,18 @@ public:
     ~Player();
 
     // Methods
-    void takeDamage(const int damage);
-    void gainHealth(const int health);
+    void takeDamage(const float damage);
+    void gainHealth(const float health);
 
     // Accessors
-    const sf::RectangleShape &getShape() const;
-    const int &getHp() const;
-    const int &getMaxHp() const;
+    const sf::Sprite &getSprite() const;
+    const float &getHp() const;
+    const float &getMaxHp() const;
 
     // Update
     void updateInput();
     void updateWindowBoundsCollision(const sf::RenderTarget *target);
+    void updateHealthTextures();
     void update(const sf::RenderTarget *target);
 
     // Render

@@ -37,6 +37,24 @@ void Game::initText()
     this->guiText.setFillColor(sf::Color::White);
     this->guiText.setCharacterSize(16);
     this->guiText.setPosition(0.f, 30.f);
+
+    this->pointsText.setFont(this->font);
+    this->pointsText.setFillColor(sf::Color::White);
+    this->pointsText.setCharacterSize(26);
+    this->pointsText.setPosition(50.f, 51.f);
+}
+
+void Game::initTextures()
+{
+    if (!this->mushroomTexture.loadFromFile("assets/mushroom.png"))
+        std::cout << "ERROR::GAME::INITTEXTURES: Mushroom texture not loaded correctly" << std::endl;
+}
+
+void Game::initSprites()
+{
+    this->pointsSprite.setTexture(this->mushroomTexture);
+    this->pointsSprite.setScale(0.17f, 0.17f);
+    this->pointsSprite.setPosition(5.f, 50.f);
 }
 
 // Constructors / Destructors
@@ -46,11 +64,19 @@ Game::Game()
     this->initWindow();
     this->initFonts();
     this->initText();
+    this->initTextures();
+    this->initSprites();
 }
 
 Game::~Game()
 {
     delete this->window;
+}
+
+// Accessors
+const bool &Game::getEndGame() const
+{
+    return this->endGame;
 }
 
 // Methods
@@ -91,12 +117,28 @@ void Game::spawnBalls()
     {
         if (this->balls.size() < this->maxBalls)
         {
-            Ball b(this->window, rand() % BallTypes::NROFTYPES);
-            std::cout << "new ball type: " << b.getType() << std::endl;
-            this->balls.push_back(b);
+
+            this->balls.push_back(Ball(this->window, this->randomizeBallType()));
             this->spawnTimer = 0.f;
         }
     }
+}
+
+const int Game::randomizeBallType() const
+{
+    int type = BallTypes::DEFAULT;
+    int randValue = rand() % 100 + 1;
+
+    // 30% of probability to get DAMAGING balls
+    // 10% of probability to get HEALING balls
+    // 60% of probability to get DEFAULT balls
+
+    if (randValue > 60 && randValue <= 90)
+        type = BallTypes::DAMAGING;
+    else if (randValue > 90 && randValue <= 100)
+        type = BallTypes::HEALING;
+
+    return type;
 }
 
 // UPDATE & RENDER
@@ -107,25 +149,21 @@ void Game::updateCollision()
     {
 
         // Check if the player collide with any of the balls
-        if (this->player.getShape().getGlobalBounds().intersects(this->balls[i].getShape().getGlobalBounds()))
+        if (this->player.getSprite().getGlobalBounds().intersects(this->balls[i].getShape().getGlobalBounds()))
         {
-            std::cout << "Type: " << this->balls[i].getType() << std::endl;
 
             switch (this->balls[i].getType())
             {
             case BallTypes::DEFAULT:
                 this->points += 1;
-                std::cout << "points" << std::endl;
                 break;
 
             case BallTypes::DAMAGING:
-                this->player.takeDamage(1);
-                std::cout << "damage" << std::endl;
+                this->player.takeDamage(0.5);
                 break;
 
             case BallTypes::HEALING:
-                this->player.gainHealth(1);
-                std::cout << "health" << std::endl;
+                this->player.gainHealth(0.5);
                 break;
             }
             this->balls.erase(this->balls.begin() + i);
@@ -135,25 +173,45 @@ void Game::updateCollision()
 
 void Game::updateGui()
 {
-    std::stringstream ss;
-    ss << "Points: " << this->points << std::endl
-       << "Health: " << this->player.getHp() << " /" << this->player.getMaxHp() << std::endl;
 
-    this->guiText.setString(ss.str());
+    std::stringstream guiString;
+    std::stringstream pointsString;
+    if (this->endGame == false)
+    {
+        pointsString << this->points;
+
+        guiString << "Health: " << this->player.getHp() << " /" << this->player.getMaxHp() << std::endl;
+    }
+    else
+    {
+        guiString << "   Game Over" << std::endl
+                  << "Your score is: " << this->points;
+        this->guiText.setPosition(this->window->getSize().x / 2 - this->guiText.getGlobalBounds().width / 2, this->window->getSize().y / 2 - this->guiText.getGlobalBounds().height / 2);
+        this->guiText.setCharacterSize(26);
+    }
+
+    this->pointsText.setString(pointsString.str());
+    this->guiText.setString(guiString.str());
 }
 
 void Game::update()
 {
     this->pollEvents();
-    this->spawnBalls();
-    this->player.update(this->window);
-    this->updateCollision();
+    if (this->endGame == false)
+    {
+        this->spawnBalls();
+        this->player.update(this->window);
+        this->updateCollision();
+    }
     this->updateGui();
+    if (this->player.getHp() == 0)
+        this->endGame = true;
 }
 
 void Game::renderGui(sf::RenderWindow *target)
 {
     target->draw(this->title);
+    target->draw(this->pointsText);
     target->draw(this->guiText);
 }
 void Game::render()
@@ -161,14 +219,16 @@ void Game::render()
     this->window->clear();
 
     // Render stuff
-    this->player.render(this->window);
-
     this->renderGui(this->window);
-
-    for (auto i : this->balls)
+    if (this->endGame == false)
     {
-        i.render(this->window);
-    }
+        this->window->draw(this->pointsSprite);
+        this->player.render(this->window);
 
+        for (auto i : this->balls)
+        {
+            i.render(this->window);
+        }
+    }
     this->window->display();
 }

@@ -19,6 +19,10 @@ private:
     sf::Text guiText;
     sf::Text title;
     bool endGame;
+
+    sf::Texture mushroomTexture;
+    sf::Sprite pointsSprite;
+    sf::Text pointsText;
     int points;
 
     Player player;
@@ -33,6 +37,8 @@ private:
     void initVariables();
     void initFonts();
     void initText();
+    void initTextures();
+    void initSprites();
 
 public:
     // Constructors / Destructor
@@ -40,6 +46,7 @@ public:
     ~Game();
 
     // Accessors
+    const bool &getEndGame() const;
 
     // Modifiers
 
@@ -48,6 +55,7 @@ public:
     void closeWindow();
     void pollEvents();
     void spawnBalls();
+    const int randomizeBallType() const;
 
     // Update
     void updateCollision();

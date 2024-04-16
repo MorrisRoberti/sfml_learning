@@ -3,9 +3,10 @@
 // Constructors / Destructors
 Player::Player(float x, float y)
 {
-    this->shape.setPosition(x, y);
+    this->playerSprite.setPosition(x, y);
     this->initVariables();
-    this->initShape();
+    this->initTextures();
+    this->initSprites();
 }
 
 Player::~Player() {}
@@ -14,18 +15,36 @@ Player::~Player() {}
 
 void Player::initVariables()
 {
-    this->movementSpeed = 5.f;
-    this->hpMax = 10;
+    this->movementSpeed = 7.f;
+    this->hpMax = 5;
     this->hp = hpMax;
 }
 
-void Player::initShape()
+void Player::initTextures()
 {
-    this->shape.setFillColor(sf::Color::Green);
-    this->shape.setSize(sf::Vector2f(50.f, 50.f));
+    if (!this->playerTexture.loadFromFile("assets/player.png"))
+        std::cout << "ERROR::PLAYER::INITTEXTURES: Player texture not loaded correctly" << std::endl;
+
+    if (!this->fullHeartTexture.loadFromFile("assets/full_heart.png"))
+        std::cout << "ERROR::PLAYER::INITTEXTURES: Full Heart texture not loaded correctly" << std::endl;
+
+    if (!this->halfHeartTexture.loadFromFile("assets/half_heart.png"))
+        std::cout << "ERROR::PLAYER::INITTEXTURES: Half Heart texture not loaded correctly" << std::endl;
 }
 
-void Player::takeDamage(const int damage)
+void Player::initSprites()
+{
+    this->playerSprite.setTexture(this->playerTexture);
+    this->playerSprite.setScale(0.35f, 0.35f);
+
+    this->heartSprite.setTexture(this->fullHeartTexture);
+    this->heartSprite.setScale(0.5f, 0.5f);
+
+    for (int i = 0; i < 5; i++)
+        this->heartSprites.push_back(this->heartSprite);
+}
+
+void Player::takeDamage(const float damage)
 {
     if (this->hp > 0)
         this->hp -= damage;
@@ -34,7 +53,7 @@ void Player::takeDamage(const int damage)
         this->hp = 0;
 }
 
-void Player::gainHealth(const int health)
+void Player::gainHealth(const float health)
 {
 
     if (this->hp + health <= this->hpMax)
@@ -43,17 +62,17 @@ void Player::gainHealth(const int health)
         this->hp = this->hpMax;
 }
 
-const sf::RectangleShape &Player::getShape() const
+const sf::Sprite &Player::getSprite() const
 {
-    return this->shape;
+    return this->playerSprite;
 }
 
-const int &Player::getHp() const
+const float &Player::getHp() const
 {
     return this->hp;
 }
 
-const int &Player::getMaxHp() const
+const float &Player::getMaxHp() const
 {
     return this->hpMax;
 }
@@ -63,39 +82,45 @@ void Player::updateInput()
     // Left
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-        this->shape.move(-this->movementSpeed, 0.f);
+        this->playerSprite.move(-this->movementSpeed, 0.f);
     } // Right
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-        this->shape.move(this->movementSpeed, 0.f);
+        this->playerSprite.move(this->movementSpeed, 0.f);
     } // Up
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        this->shape.move(0.f, -this->movementSpeed);
+        this->playerSprite.move(0.f, -this->movementSpeed);
     } // Down
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        this->shape.move(0.f, this->movementSpeed);
+        this->playerSprite.move(0.f, this->movementSpeed);
     }
 }
 
 void Player::updateWindowBoundsCollision(const sf::RenderTarget *target)
 {
     // Left
-    if (this->shape.getGlobalBounds().left <= 0.f)
-        this->shape.setPosition(0.f, this->shape.getGlobalBounds().top);
+    if (this->playerSprite.getGlobalBounds().left <= 0.f)
+        this->playerSprite.setPosition(0.f, this->playerSprite.getGlobalBounds().top);
 
     // Right
-    if (this->shape.getGlobalBounds().left + this->shape.getGlobalBounds().width >= target->getSize().x)
-        this->shape.setPosition(target->getSize().x - this->shape.getGlobalBounds().width, this->shape.getGlobalBounds().top);
+    if (this->playerSprite.getGlobalBounds().left + this->playerSprite.getGlobalBounds().width >= target->getSize().x)
+        this->playerSprite.setPosition(target->getSize().x - this->playerSprite.getGlobalBounds().width, this->playerSprite.getGlobalBounds().top);
 
     // Top
-    if (this->shape.getGlobalBounds().top <= 0.f)
-        this->shape.setPosition(this->shape.getGlobalBounds().left, 0.f);
+    if (this->playerSprite.getGlobalBounds().top <= 0.f)
+        this->playerSprite.setPosition(this->playerSprite.getGlobalBounds().left, 0.f);
 
     // Bottom
-    if (this->shape.getGlobalBounds().top + this->shape.getGlobalBounds().height >= target->getSize().y)
-        this->shape.setPosition(this->shape.getGlobalBounds().left, target->getSize().y - this->shape.getGlobalBounds().height);
+    if (this->playerSprite.getGlobalBounds().top + this->playerSprite.getGlobalBounds().height >= target->getSize().y)
+        this->playerSprite.setPosition(this->playerSprite.getGlobalBounds().left, target->getSize().y - this->playerSprite.getGlobalBounds().height);
+}
+
+void Player::updateHealthTextures()
+{
+
+    // TODO: I want to update the texture of the hearts by the hp value
 }
 
 void Player::update(const sf::RenderTarget *target)
@@ -110,5 +135,7 @@ void Player::update(const sf::RenderTarget *target)
 
 void Player::render(sf::RenderTarget *target)
 {
-    target->draw(this->shape);
+    target->draw(this->fullHeartSprite);
+    target->draw(this->halfHeartSprite);
+    target->draw(this->playerSprite);
 }
