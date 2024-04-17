@@ -18,8 +18,10 @@ private:
     sf::Font font;
     sf::Text guiText;
     sf::Text title;
+    sf::Sprite backgroundSprite;
     bool endGame;
 
+    sf::Texture backgroundTexture;
     sf::Texture mushroomTexture;
     sf::Sprite pointsSprite;
     sf::Text pointsText;

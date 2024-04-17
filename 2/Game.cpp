@@ -52,10 +52,14 @@ void Game::initTextures()
         std::cout << "ERROR::GAME::INITTEXTURES: Bad Mushroom texture not loaded correctly" << std::endl;
     if (!this->healingPotionTexture.loadFromFile("assets/healing_potion.png"))
         std::cout << "ERROR::GAME::INITTEXTURES: Healing Potion texture not loaded correctly" << std::endl;
+    if (!this->backgroundTexture.loadFromFile("assets/healing_potion.png"))
+        std::cout << "ERROR::GAME::INITTEXTURES: Background texture not loaded correctly" << std::endl;
 }
 
 void Game::initSprites()
 {
+    this->backgroundSprite.setTexture(this->backgroundTexture);
+    this->backgroundSprite.setPosition(0.f, 0.f);
     this->pointsSprite.setTexture(this->mushroomTexture);
     this->pointsSprite.setScale(0.17f, 0.17f);
     this->pointsSprite.setPosition(5.f, 67.f);
@@ -236,6 +240,7 @@ void Game::update()
 
 void Game::renderGui(sf::RenderWindow *target)
 {
+    target->draw(this->backgroundSprite);
     target->draw(this->title);
     target->draw(this->pointsText);
     target->draw(this->guiText);
@@ -243,7 +248,6 @@ void Game::renderGui(sf::RenderWindow *target)
 void Game::render()
 {
     this->window->clear();
-
     // Render stuff
     this->renderGui(this->window);
     if (this->endGame == false)
