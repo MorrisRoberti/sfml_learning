@@ -3,6 +3,7 @@
 // Constructors / Destructors
 Ball::Ball(const sf::RenderWindow *window, int type) : type(type)
 {
+    std::cout << "Type: " << this->type;
     this->initTextures();
     this->initSprites(window);
 }
