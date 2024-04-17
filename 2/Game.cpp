@@ -41,7 +41,7 @@ void Game::initText()
     this->pointsText.setFont(this->font);
     this->pointsText.setFillColor(sf::Color::White);
     this->pointsText.setCharacterSize(26);
-    this->pointsText.setPosition(50.f, 51.f);
+    this->pointsText.setPosition(50.f, 68.f);
 }
 
 void Game::initTextures()
@@ -54,7 +54,7 @@ void Game::initSprites()
 {
     this->pointsSprite.setTexture(this->mushroomTexture);
     this->pointsSprite.setScale(0.17f, 0.17f);
-    this->pointsSprite.setPosition(5.f, 50.f);
+    this->pointsSprite.setPosition(5.f, 67.f);
 }
 
 // Constructors / Destructors
@@ -179,8 +179,6 @@ void Game::updateGui()
     if (this->endGame == false)
     {
         pointsString << this->points;
-
-        guiString << "Health: " << this->player.getHp() << " /" << this->player.getMaxHp() << std::endl;
     }
     else
     {

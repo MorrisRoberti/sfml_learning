@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
@@ -18,6 +19,8 @@ private:
 
     sf::Texture fullHeartTexture;
     sf::Texture halfHeartTexture;
+    sf::Texture emptyHeartTexture;
+
     sf::Texture playerTexture;
 
     std::vector<sf::Sprite> heartSprites;

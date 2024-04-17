@@ -30,6 +30,9 @@ void Player::initTextures()
 
     if (!this->halfHeartTexture.loadFromFile("assets/half_heart.png"))
         std::cout << "ERROR::PLAYER::INITTEXTURES: Half Heart texture not loaded correctly" << std::endl;
+
+    if (!this->emptyHeartTexture.loadFromFile("assets/empty_heart.png"))
+        std::cout << "ERROR::PLAYER::INITTEXTURES: Empty Heart texture not loaded correctly" << std::endl;
 }
 
 void Player::initSprites()
@@ -37,20 +40,27 @@ void Player::initSprites()
     this->playerSprite.setTexture(this->playerTexture);
     this->playerSprite.setScale(0.35f, 0.35f);
 
+    // initializing every heart with the full texture
     this->heartSprite.setTexture(this->fullHeartTexture);
-    this->heartSprite.setScale(0.5f, 0.5f);
+    this->heartSprite.setScale(0.2f, 0.2f);
 
     for (int i = 0; i < 5; i++)
+    {
+        this->heartSprite.setPosition(i * 50.f, 30.f);
         this->heartSprites.push_back(this->heartSprite);
+    }
 }
 
 void Player::takeDamage(const float damage)
 {
+
     if (this->hp > 0)
         this->hp -= damage;
 
     if (this->hp < damage)
         this->hp = 0;
+
+    this->updateHealthTextures();
 }
 
 void Player::gainHealth(const float health)
@@ -60,6 +70,7 @@ void Player::gainHealth(const float health)
         this->hp += health;
     else
         this->hp = this->hpMax;
+    this->updateHealthTextures();
 }
 
 const sf::Sprite &Player::getSprite() const
@@ -120,7 +131,38 @@ void Player::updateWindowBoundsCollision(const sf::RenderTarget *target)
 void Player::updateHealthTextures()
 {
 
-    // TODO: I want to update the texture of the hearts by the hp value
+    // setting the right texture for health based on hp calculations
+    int numberOfFullHearts = this->hp;
+    int numberOfEmptyHearts;
+    int numberOfHalfHearts = 0;
+
+    if (std::floor(this->hp) == this->hp)
+    {
+        // no half hearts
+        numberOfEmptyHearts = this->hpMax - this->hp;
+    }
+    else
+    {
+        // half heart
+        numberOfHalfHearts = 1;
+        numberOfFullHearts = std::floor(this->hp);
+        numberOfEmptyHearts = std::floor(this->hpMax - this->hp);
+    }
+
+    int counter = 0;
+    for (; counter < numberOfFullHearts; counter++)
+    {
+        this->heartSprites[counter].setTexture(this->fullHeartTexture);
+    }
+
+    if (numberOfHalfHearts == 1)
+    {
+        this->heartSprites[counter].setTexture(this->halfHeartTexture);
+        counter++;
+    }
+
+    for (; counter < numberOfEmptyHearts + numberOfFullHearts; counter++)
+        this->heartSprites[counter].setTexture(this->emptyHeartTexture);
 }
 
 void Player::update(const sf::RenderTarget *target)
@@ -135,7 +177,7 @@ void Player::update(const sf::RenderTarget *target)
 
 void Player::render(sf::RenderTarget *target)
 {
-    target->draw(this->fullHeartSprite);
-    target->draw(this->halfHeartSprite);
+    for (sf::Sprite s : this->heartSprites)
+        target->draw(s);
     target->draw(this->playerSprite);
 }
