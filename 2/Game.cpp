@@ -4,7 +4,7 @@
 void Game::initWindow()
 {
     this->videoMode = sf::VideoMode(800, 600);
-    this->window = new sf::RenderWindow(this->videoMode, "Game 2", sf::Style::Close | sf::Style::Titlebar);
+    this->window = new sf::RenderWindow(this->videoMode, "Mushrooms", sf::Style::Close | sf::Style::Titlebar);
     this->window->setFramerateLimit(60);
 }
 
@@ -28,7 +28,7 @@ void Game::initFonts()
 void Game::initText()
 {
     this->title.setFont(this->font);
-    this->title.setString("Hello World");
+    this->title.setString("Mushrooms");
     this->title.setFillColor(sf::Color::White);
     this->title.setCharacterSize(24);
     this->title.setPosition(0.f, 0.f);
@@ -48,6 +48,10 @@ void Game::initTextures()
 {
     if (!this->mushroomTexture.loadFromFile("assets/mushroom.png"))
         std::cout << "ERROR::GAME::INITTEXTURES: Mushroom texture not loaded correctly" << std::endl;
+    if (!this->badMushroomTexture.loadFromFile("assets/bad_mushroom.png"))
+        std::cout << "ERROR::GAME::INITTEXTURES: Bad Mushroom texture not loaded correctly" << std::endl;
+    if (!this->healingPotionTexture.loadFromFile("assets/healing_potion.png"))
+        std::cout << "ERROR::GAME::INITTEXTURES: Healing Potion texture not loaded correctly" << std::endl;
 }
 
 void Game::initSprites()
@@ -77,6 +81,25 @@ Game::~Game()
 const bool &Game::getEndGame() const
 {
     return this->endGame;
+}
+
+// Modifiers
+void Game::setTextureBasedOnType(Ball &ball, const int type)
+{
+    switch (type)
+    {
+    case BallTypes::DEFAULT:
+        ball.setSpriteTexture(this->mushroomTexture);
+        break;
+
+    case BallTypes::DAMAGING:
+        ball.setSpriteTexture(this->badMushroomTexture);
+        break;
+
+    case BallTypes::HEALING:
+        ball.setSpriteTexture(this->healingPotionTexture);
+        break;
+    }
 }
 
 // Methods
@@ -118,13 +141,18 @@ void Game::spawnBalls()
         if (this->balls.size() < this->maxBalls)
         {
 
-            this->balls.push_back(Ball(this->window, this->randomizeBallType()));
+            int type = this->randomizeBallType();
+            Ball b(this->window, type);
+
+            this->setTextureBasedOnType(b, type);
+
+            this->balls.push_back(b);
             this->spawnTimer = 0.f;
         }
     }
 }
 
-const int Game::randomizeBallType() const
+const int Game::randomizeBallType()
 {
     int type = BallTypes::DEFAULT;
     int randValue = rand() % 100 + 1;
@@ -222,7 +250,6 @@ void Game::render()
     {
         this->window->draw(this->pointsSprite);
         this->player.render(this->window);
-
         for (auto i : this->balls)
         {
             i.render(this->window);

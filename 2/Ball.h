@@ -21,14 +21,10 @@ class Ball
 private:
     // Attributes
     sf::Sprite itemSprite;
-    sf::Texture goodMushroomTexture;
-    sf::Texture badMushroomTexture;
-    sf::Texture healingPotionTexture;
     int type;
 
     // Methods
     void initVariables();
-    void initTextures();
     void initSprites(const sf::RenderWindow *window);
 
 public:
@@ -41,6 +37,7 @@ public:
     const int &getType() const;
 
     // Methods
+    void setSpriteTexture(sf::Texture &texture);
 
     // Update
     void update();

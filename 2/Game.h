@@ -27,6 +27,10 @@ private:
 
     Player player;
 
+    sf::Texture badMushroomTexture;
+    sf::Texture healingPotionTexture;
+    sf::Texture ballTexture;
+
     std::vector<Ball> balls;
     float spawnTimerMax;
     float spawnTimer;
@@ -49,13 +53,14 @@ public:
     const bool &getEndGame() const;
 
     // Modifiers
+    void setTextureBasedOnType(Ball &ball, const int type);
 
     // Metods
     const bool isWindowOpen() const;
     void closeWindow();
     void pollEvents();
     void spawnBalls();
-    const int randomizeBallType() const;
+    const int randomizeBallType();
 
     // Update
     void updateCollision();
