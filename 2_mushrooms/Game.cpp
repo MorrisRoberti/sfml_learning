@@ -52,7 +52,7 @@ void Game::initTextures()
         std::cout << "ERROR::GAME::INITTEXTURES: Bad Mushroom texture not loaded correctly" << std::endl;
     if (!this->healingPotionTexture.loadFromFile("assets/healing_potion.png"))
         std::cout << "ERROR::GAME::INITTEXTURES: Healing Potion texture not loaded correctly" << std::endl;
-    if (!this->backgroundTexture.loadFromFile("assets/healing_potion.png"))
+    if (!this->backgroundTexture.loadFromFile("assets/background.png"))
         std::cout << "ERROR::GAME::INITTEXTURES: Background texture not loaded correctly" << std::endl;
 }
 
