@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
@@ -18,12 +20,16 @@ class Ball
 {
 private:
     // Attributes
-    sf::CircleShape shape;
+    sf::Sprite itemSprite;
+    sf::Texture goodMushroomTexture;
+    sf::Texture badMushroomTexture;
+    sf::Texture healingPotionTexture;
     int type;
 
     // Methods
     void initVariables();
-    void initShape(const sf::RenderWindow *window);
+    void initTextures();
+    void initSprites(const sf::RenderWindow *window);
 
 public:
     // Constructor / Destructors
@@ -31,7 +37,7 @@ public:
     ~Ball();
 
     // Accessor
-    const sf::CircleShape &getShape() const;
+    const sf::Sprite &getSprite() const;
     const int &getType() const;
 
     // Methods

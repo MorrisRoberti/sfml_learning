@@ -149,7 +149,7 @@ void Game::updateCollision()
     {
 
         // Check if the player collide with any of the balls
-        if (this->player.getSprite().getGlobalBounds().intersects(this->balls[i].getShape().getGlobalBounds()))
+        if (this->player.getSprite().getGlobalBounds().intersects(this->balls[i].getSprite().getGlobalBounds()))
         {
 
             switch (this->balls[i].getType())
