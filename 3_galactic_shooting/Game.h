@@ -1,10 +1,9 @@
 #pragma once
+#include "Player.h"
+#include "Bullet.h"
 
+#include <map>
 #include <iostream>
-
-#include <SFML/Config.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
 
 class Game
 {
@@ -15,13 +14,17 @@ private:
     sf::Event event;
     bool endGame;
 
+    // resources
+    std::map<std::string, sf::Texture> textures;
+
+    // scene objects
+    Player *player;
+
     // initializers
     void initVariables();
     void initWindow();
     void initTextures();
-
-    // private methods
-    void pollEvents();
+    void initPlayer();
 
 public:
     // constructors / destructors
@@ -33,6 +36,8 @@ public:
 
     // update
     void update();
+    void updatePollEvents();
+    void updateInput();
 
     // render
     void render(sf::RenderWindow *target);

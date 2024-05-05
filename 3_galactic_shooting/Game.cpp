@@ -5,11 +5,13 @@ Game::Game()
 {
     this->initVariables();
     this->initWindow();
+    this->initPlayer();
 }
 
 Game::~Game()
 {
     delete this->window;
+    delete this->player;
 }
 
 // initializers
@@ -23,12 +25,32 @@ void Game::initWindow()
 {
     this->window = new sf::RenderWindow(this->videomode, "Galactic Shooting", sf::Style::Titlebar | sf::Style::Close);
     this->window->setFramerateLimit(60);
+    this->window->setVerticalSyncEnabled(false);
 }
 
-void Game::initTextures() {}
+void Game::initTextures()
+{
 
-// private methods
-void Game::pollEvents()
+    // loading textures and inserting them in the textures map
+}
+
+void Game::initPlayer()
+{
+    this->player = new Player();
+}
+
+// methods
+void Game::run()
+{
+    while (this->window->isOpen())
+    {
+        this->update();
+
+        this->render(this->window);
+    }
+}
+
+void Game::updatePollEvents()
 {
 
     while (this->window->pollEvent(this->event))
@@ -48,26 +70,31 @@ void Game::pollEvents()
     }
 }
 
-// methods
-void Game::run()
+void Game::updateInput()
 {
-    while (this->window->isOpen())
-    {
-        this->update();
-
-        this->render(this->window);
-    }
+    // move player
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        this->player->move(-1.f, 0.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        this->player->move(1.f, 0.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        this->player->move(0.f, -1.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        this->player->move(0.f, 1.f);
 }
 
 // UPDATE & RENDER
 void Game::update()
 {
-    this->pollEvents();
+    this->updatePollEvents();
+    this->updateInput();
 }
 
 void Game::render(sf::RenderWindow *target)
 {
     target->clear();
+
+    this->player->render(*target);
 
     target->display();
 }
