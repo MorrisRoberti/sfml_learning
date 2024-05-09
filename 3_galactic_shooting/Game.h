@@ -4,6 +4,7 @@
 
 #include <map>
 #include <iostream>
+#include <cmath>
 
 class Game
 {
@@ -15,10 +16,13 @@ private:
     bool endGame;
 
     // resources
-    std::map<std::string, sf::Texture> textures;
+    std::map<std::string, sf::Texture *> textures;
 
     // scene objects
     Player *player;
+    std::vector<Bullet *> bullets;
+
+    float normalize(int x_, int y_);
 
     // initializers
     void initVariables();
@@ -38,6 +42,7 @@ public:
     void update();
     void updatePollEvents();
     void updateInput();
+    void updateBullets();
 
     // render
     void render(sf::RenderWindow *target);

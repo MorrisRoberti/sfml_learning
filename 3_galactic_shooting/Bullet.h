@@ -16,12 +16,16 @@ private:
 
 public:
     // constructors / destructors
-    Bullet(sf::Texture &texture, float dirX, float dirY, float movementSpeed);
+    Bullet(sf::Texture *texture, float posX, float posY, float dirX, float dirY, float movementSpeed);
+    Bullet();
     ~Bullet();
+
+    // accessor
+    const sf::FloatRect getBounds() const;
 
     // update
     void update();
 
     // render
-    void render(sf::RenderTarget *target);
+    void render(sf::RenderTarget &target);
 };

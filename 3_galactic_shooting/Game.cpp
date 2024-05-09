@@ -4,6 +4,7 @@
 Game::Game()
 {
     this->initVariables();
+    this->initTextures();
     this->initWindow();
     this->initPlayer();
 }
@@ -12,6 +13,14 @@ Game::~Game()
 {
     delete this->window;
     delete this->player;
+
+    // deallocates the textures
+    for (auto &i : this->textures)
+        delete i.second;
+
+    // deallocates bullets
+    for (auto *bullet : this->bullets)
+        delete bullet;
 }
 
 // initializers
@@ -32,6 +41,9 @@ void Game::initTextures()
 {
 
     // loading textures and inserting them in the textures map
+    this->textures["BULLET"] = new sf::Texture();
+    if (!this->textures["BULLET"]->loadFromFile("assets/bullet.png"))
+        std::cout << "ERROR::GAME::INITTEXTURES: Bullet texture not loaded correctly" << std::endl;
 }
 
 void Game::initPlayer()
@@ -81,6 +93,21 @@ void Game::updateInput()
         this->player->move(0.f, -1.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         this->player->move(0.f, 1.f);
+
+    this->player->rotate(sf::Mouse::getPosition(*this->window));
+
+    // shoot
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPosition().x + (this->player->getBounds().width / 2), this->player->getPosition().y + (this->player->getBounds().height / 2), sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y, 0.01f));
+    }
+}
+
+void Game::updateBullets()
+{
+
+    for (auto *bullet : this->bullets)
+        bullet->update();
 }
 
 // UPDATE & RENDER
@@ -88,11 +115,15 @@ void Game::update()
 {
     this->updatePollEvents();
     this->updateInput();
+    this->updateBullets();
 }
 
 void Game::render(sf::RenderWindow *target)
 {
     target->clear();
+
+    for (auto *bullet : this->bullets)
+        bullet->render(*target);
 
     this->player->render(*target);
 
