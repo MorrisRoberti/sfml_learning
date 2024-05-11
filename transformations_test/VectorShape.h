@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
@@ -17,6 +18,7 @@ private:
     sf::Vector2i origin;
 
     sf::VertexArray line;
+    sf::VertexArray arrowHead;
 
     // init
     void initVariables();

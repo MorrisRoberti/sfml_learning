@@ -24,7 +24,7 @@ void Game::initWindow()
 void Game::initVariables()
 {
     this->background = new Background(this->window);
-    this->vec = VectorShape(100.f, 100.f, this->background->getOrigin(), 5.f);
+    this->vec = VectorShape(100.f, 300.f, this->background->getOrigin(), 5.f);
 };
 
 void Game::pollEvents()
