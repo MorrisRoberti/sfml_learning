@@ -26,18 +26,21 @@ public:
     Background(sf::RenderWindow *target);
     ~Background();
 
-    // methods
+    // getters
+    const int getXAxis() const;
+    const int getYAxis() const;
+
+    const sf::Color &getXAxisColor() const;
+    const sf::Color &getYAxisColor() const;
+
+    const sf::Vector2i getOrigin() const;
+
+    // setter
     void setXAxis(int yValue);
     void setYAxis(int xValue);
 
     void setXAxisColor(sf::Color color, int opacity);
     void setYAxisColor(sf::Color color, int opacity);
-
-    int getXAxis();
-    int getYAxis();
-
-    sf::Color &getXAxisColor();
-    sf::Color &getYAxisColor();
 
     // update
     void update();

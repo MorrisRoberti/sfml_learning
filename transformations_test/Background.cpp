@@ -51,22 +51,27 @@ void Background::setYAxisColor(sf::Color color, int opacity)
 }
 
 // getters
-int Background::getXAxis()
+const int Background::getXAxis() const
 {
     return this->xAxis;
 }
-int Background::getYAxis()
+const int Background::getYAxis() const
 {
     return this->yAxis;
 }
 
-sf::Color &Background::getXAxisColor()
+const sf::Color &Background::getXAxisColor() const
 {
     return this->xAxisColor;
 }
-sf::Color &Background::getYAxisColor()
+const sf::Color &Background::getYAxisColor() const
 {
     return this->yAxisColor;
+}
+
+const sf::Vector2i Background::getOrigin() const
+{
+    return sf::Vector2i(this->yAxis, this->xAxis);
 }
 
 // update

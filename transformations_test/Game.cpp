@@ -17,13 +17,14 @@ Game::~Game()
 // init
 void Game::initWindow()
 {
-    this->videoMode = sf::VideoMode(1200, 900);
+    this->videoMode = sf::VideoMode(900, 900);
     this->window = new sf::RenderWindow(this->videoMode, "Transformations", sf::Style::Close);
 }
 
 void Game::initVariables()
 {
     this->background = new Background(this->window);
+    this->vec = VectorShape(100.f, 100.f, this->background->getOrigin(), 5.f);
 };
 
 void Game::pollEvents()
@@ -64,6 +65,7 @@ void Game::render(sf::RenderWindow *target)
     target->clear();
 
     this->background->render(target);
+    this->vec.render(target);
 
     target->display();
 }

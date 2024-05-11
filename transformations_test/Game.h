@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Backgorund.h"
+#include "VectorShape.h"
 
 #include <SFML/System.hpp>
 #include <SFML/Config.hpp>
@@ -15,6 +16,7 @@ private:
     sf::Event event;
 
     Background *background;
+    VectorShape vec;
 
     // init
     void initWindow();
