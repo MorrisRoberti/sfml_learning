@@ -1,4 +1,5 @@
 #include "Bullet.h"
+#include <cmath>
 
 // constructors / destructors
 Bullet::Bullet(sf::Texture *texture, float posX, float posY, float dirX, float dirY, float movementSpeed)
@@ -6,6 +7,7 @@ Bullet::Bullet(sf::Texture *texture, float posX, float posY, float dirX, float d
 
     this->sprite.setTexture(*texture);
 
+    this->sprite.setRotation(std::atan2(dirX, dirY) * 180 / (std::atan(1) * 4));
     this->sprite.setPosition(posX, posY);
     this->sprite.setScale(0.2f, 0.2f);
 
