@@ -25,6 +25,7 @@ void Game::initVariables()
 {
     this->background = new Background(this->window);
     this->vec = VectorShape(100.f, 300.f, this->background->getOrigin(), 5.f);
+    this->vec2 = this->vec.normalize();
 };
 
 void Game::pollEvents()
@@ -65,7 +66,8 @@ void Game::render(sf::RenderWindow *target)
     target->clear();
 
     this->background->render(target);
-    this->vec.render(target);
+    // this->vec.render(target);
+    this->vec2.render(target);
 
     target->display();
 }

@@ -17,6 +17,7 @@ private:
 
     Background *background;
     VectorShape vec;
+    VectorShape vec2;
 
     // init
     void initWindow();

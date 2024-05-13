@@ -18,7 +18,6 @@ private:
     sf::Vector2i origin;
 
     sf::VertexArray line;
-    sf::VertexArray arrowHead;
 
     // init
     void initVariables();
@@ -26,6 +25,7 @@ private:
 public:
     // constructor
     VectorShape();
+    VectorShape(const VectorShape &vec);
     VectorShape(float x, float y, const sf::Vector2i origin);
     VectorShape(float x, float y, const sf::Vector2i origin, float magnitude);
 
@@ -35,6 +35,7 @@ public:
 
     const float getMagnitude() const;
     const sf::Color getColor() const;
+    const sf::Vector2i getOrigin() const;
 
     // setter
     void setX(float newX);
@@ -43,8 +44,12 @@ public:
     void setColor(sf::Color color);
 
     // operators
+    float operator*(const VectorShape &vec2) const;
+    VectorShape &operator/(const sf::Vector2f &vec2) const;
 
     // utilities
+    float getNorm() const;
+    VectorShape &normalize();
 
     // update
     void update();

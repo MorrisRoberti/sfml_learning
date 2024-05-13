@@ -23,6 +23,13 @@ void Background::initVariables(sf::RenderWindow *target)
     this->yAxisShape = sf::RectangleShape(sf::Vector2f(2, target->getSize().y));
     this->yAxisShape.setFillColor(this->yAxisColor);
     this->yAxisShape.setPosition(yAxis, 0);
+
+    this->unitCircle.setPosition(this->yAxis, this->xAxis);
+    this->unitCircle.setRadius(150);
+    this->unitCircle.setOrigin(this->unitCircle.getLocalBounds().width / 2, this->unitCircle.getGlobalBounds().height / 2);
+    this->unitCircle.setOutlineThickness(2);
+    this->unitCircle.setOutlineColor(this->xAxisColor);
+    this->unitCircle.setFillColor(sf::Color::Transparent);
 }
 
 // setters
@@ -82,4 +89,5 @@ void Background::render(sf::RenderWindow *target)
 {
     target->draw(this->xAxisShape);
     target->draw(this->yAxisShape);
+    target->draw(this->unitCircle);
 }

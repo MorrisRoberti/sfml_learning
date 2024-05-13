@@ -11,6 +11,16 @@ VectorShape::VectorShape()
     this->initVariables();
 }
 
+VectorShape::VectorShape(const VectorShape &vec2)
+{
+    this->x = vec2.x;
+    this->y = vec2.y;
+    this->origin = vec2.getOrigin();
+    this->color = vec2.getColor();
+    this->magnitude = vec2.getMagnitude();
+    this->initVariables();
+}
+
 VectorShape::VectorShape(float x, float y, const sf::Vector2i origin)
 {
     this->x = x;
@@ -41,28 +51,48 @@ void VectorShape::initVariables()
 
     this->line[1].position = sf::Vector2f(this->origin.x + this->x, this->origin.y + this->y);
     this->line[1].color = this->color;
+}
 
-    this->arrowHead = sf::VertexArray(sf::Triangles, 3);
+// operators
+float VectorShape::operator*(const VectorShape &vec2) const
+{
+    return this->line[1].position.x * vec2.getX() + this->line[1].position.y * vec2.getY();
+}
 
-    this->arrowHead[0].position = this->line[1].position;
-    this->arrowHead[0].color = this->color;
+VectorShape &VectorShape::operator/(const sf::Vector2f &vec2) const
+{
+    VectorShape *newVector = new VectorShape(*this);
+    newVector->setX(this->line[1].position.x / (this->origin.x + vec2.x));
+    newVector->setY(this->line[1].position.y / (this->origin.y + vec2.y));
+    return *newVector;
+}
+// utilities
+float VectorShape::getNorm() const
+{
 
-    this->arrowHead[1].position = sf::Vector2f(std::cos(this->origin.x), this->origin.y + 50);
-    this->arrowHead[1].color = this->color;
+    return static_cast<float>(std::sqrt(std::pow(this->line[1].position.x, 2) + std::pow(this->line[1].position.y, 2)));
+}
 
-    this->arrowHead[2].position = sf::Vector2f(-std::cos(this->origin.x) * 2.5, this->origin.y + 50);
-    this->arrowHead[2].color = this->color;
+VectorShape &VectorShape::normalize()
+{
+    sf::Vector2f normalizedVector(this->x / this->getNorm(), this->y / this->getNorm());
+    std::cout << this->x << " - " << this->y << " // " << normalizedVector.x << " - " << normalizedVector.y << std::endl;
+    VectorShape *returnVector = new VectorShape(normalizedVector.x * this->origin.x, normalizedVector.y * this->origin.y, this->origin, this->magnitude);
+
+    returnVector->setColor(sf::Color::Blue);
+
+    return *returnVector;
 }
 
 // getters
 const float VectorShape::getX() const
 {
-    return this->x;
+    return this->line[1].position.x;
 }
 
 const float VectorShape::getY() const
 {
-    return this->y;
+    return this->line[1].position.y;
 }
 
 const float VectorShape::getMagnitude() const
@@ -73,6 +103,11 @@ const float VectorShape::getMagnitude() const
 const sf::Color VectorShape::getColor() const
 {
     return this->color;
+}
+
+const sf::Vector2i VectorShape::getOrigin() const
+{
+    return this->origin;
 }
 
 // setter
@@ -94,24 +129,18 @@ void VectorShape::setMagnitude(float magnitude)
 void VectorShape::setColor(sf::Color color)
 {
     this->color = color;
+    this->line[0].color = this->color;
+    this->line[1].color = this->color;
 }
 
 // update
 void VectorShape::update()
 {
-    this->line[0].position = sf::Vector2f(this->origin.x, this->origin.y);
-    this->line[0].color = this->color;
-
-    this->arrowHead = sf::VertexArray(sf::Lines, 3);
-    this->arrowHead[0].position = this->line[1].position;
-    this->arrowHead[1].position = sf::Vector2f(this->arrowHead[0].position.x - 10, this->arrowHead[0].position.y - 10);
-    this->arrowHead[2].position = sf::Vector2f(this->arrowHead[0].position.x + 10, this->arrowHead[0].position.y + 10);
-    for (int i = 0; i < this->arrowHead.getVertexCount(); i++)
-        this->arrowHead[i].color = this->color;
+    this->line[1].position = sf::Vector2f(this->origin.x, this->origin.y);
+    this->line[1].color = this->color;
 }
 
 void VectorShape::render(sf::RenderWindow *target)
 {
-    target->draw(this->arrowHead);
     target->draw(this->line);
 }

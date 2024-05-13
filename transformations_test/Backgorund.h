@@ -15,6 +15,8 @@ private:
     sf::RectangleShape xAxisShape;
     sf::RectangleShape yAxisShape;
 
+    sf::CircleShape unitCircle;
+
     sf::Color xAxisColor;
     sf::Color yAxisColor;
 
