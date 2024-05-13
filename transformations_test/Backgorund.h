@@ -36,6 +36,7 @@ public:
     const sf::Color &getYAxisColor() const;
 
     const sf::Vector2i getOrigin() const;
+    const sf::CircleShape getUnitCircle() const;
 
     // setter
     void setXAxis(int yValue);

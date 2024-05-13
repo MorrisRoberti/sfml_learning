@@ -7,37 +7,24 @@ VectorShape::VectorShape()
     this->y = 0;
     this->origin = sf::Vector2i(0, 0);
     this->color = sf::Color::White;
-    this->magnitude = 0;
     this->initVariables();
 }
 
 VectorShape::VectorShape(const VectorShape &vec2)
 {
-    this->x = vec2.x;
-    this->y = vec2.y;
+    this->x = -vec2.x;
+    this->y = -vec2.y;
     this->origin = vec2.getOrigin();
     this->color = vec2.getColor();
-    this->magnitude = vec2.getMagnitude();
     this->initVariables();
 }
 
 VectorShape::VectorShape(float x, float y, const sf::Vector2i origin)
 {
-    this->x = x;
-    this->y = y;
+    this->x = -x;
+    this->y = -y;
     this->origin = origin;
     this->color = sf::Color::White;
-    this->magnitude = 10;
-    this->initVariables();
-}
-
-VectorShape::VectorShape(float x, float y, const sf::Vector2i origin, float magnitude)
-{
-    this->x = x;
-    this->y = y;
-    this->origin = origin;
-    this->color = sf::Color::White;
-    this->magnitude = magnitude;
     this->initVariables();
 }
 
@@ -70,16 +57,15 @@ VectorShape &VectorShape::operator/(const sf::Vector2f &vec2) const
 float VectorShape::getNorm() const
 {
 
-    return static_cast<float>(std::sqrt(std::pow(this->line[1].position.x, 2) + std::pow(this->line[1].position.y, 2)));
+    return static_cast<float>(std::sqrt(std::pow(this->x, 2) + std::pow(this->y, 2)));
 }
 
-VectorShape &VectorShape::normalize()
+VectorShape &VectorShape::normalize(const float &radius)
 {
     sf::Vector2f normalizedVector(this->x / this->getNorm(), this->y / this->getNorm());
-    std::cout << this->x << " - " << this->y << " // " << normalizedVector.x << " - " << normalizedVector.y << std::endl;
-    VectorShape *returnVector = new VectorShape(normalizedVector.x * this->origin.x, normalizedVector.y * this->origin.y, this->origin, this->magnitude);
+    VectorShape *returnVector = new VectorShape(normalizedVector.x * radius, normalizedVector.y * radius, this->origin);
 
-    returnVector->setColor(sf::Color::Blue);
+    returnVector->setColor(sf::Color::White);
 
     return *returnVector;
 }
@@ -93,11 +79,6 @@ const float VectorShape::getX() const
 const float VectorShape::getY() const
 {
     return this->line[1].position.y;
-}
-
-const float VectorShape::getMagnitude() const
-{
-    return this->magnitude;
 }
 
 const sf::Color VectorShape::getColor() const
@@ -121,11 +102,6 @@ void VectorShape::setY(float newY)
     this->y = newY;
 }
 
-void VectorShape::setMagnitude(float magnitude)
-{
-    this->magnitude = magnitude;
-}
-
 void VectorShape::setColor(sf::Color color)
 {
     this->color = color;
@@ -136,7 +112,7 @@ void VectorShape::setColor(sf::Color color)
 // update
 void VectorShape::update()
 {
-    this->line[1].position = sf::Vector2f(this->origin.x, this->origin.y);
+    this->line[0].color = this->color;
     this->line[1].color = this->color;
 }
 

@@ -81,6 +81,10 @@ const sf::Vector2i Background::getOrigin() const
     return sf::Vector2i(this->yAxis, this->xAxis);
 }
 
+const sf::CircleShape Background::getUnitCircle() const
+{
+    return this->unitCircle;
+}
 // update
 void Background::update() {}
 

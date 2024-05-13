@@ -24,8 +24,8 @@ void Game::initWindow()
 void Game::initVariables()
 {
     this->background = new Background(this->window);
-    this->vec = VectorShape(100.f, 300.f, this->background->getOrigin(), 5.f);
-    this->vec2 = this->vec.normalize();
+    this->vec = VectorShape(200.f, 50.f, this->background->getOrigin());
+    this->vec2 = this->vec.normalize(this->background->getUnitCircle().getRadius());
 };
 
 void Game::pollEvents()
@@ -43,6 +43,9 @@ void Game::pollEvents()
                 this->window->close();
             break;
         }
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (sf::Mouse::getPosition(*this->window).x == this->vec2.getX()) && (sf::Mouse::getPosition(*this->window).y == this->vec2.getY()))
+        std::cout << "hello" << std::endl;
 }
 
 void Game::run()
@@ -59,6 +62,7 @@ void Game::run()
 void Game::update()
 {
     this->pollEvents();
+    this->vec2.update();
 }
 
 void Game::render(sf::RenderWindow *target)
