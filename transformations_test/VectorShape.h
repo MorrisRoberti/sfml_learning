@@ -12,7 +12,10 @@ private:
     // attributes
     float x;
     float y;
+    float magnitude;
     sf::Color color;
+
+    float currentAngle;
 
     sf::Vector2i origin;
     sf::VertexArray line;
@@ -29,6 +32,7 @@ public:
     // getter
     const float getX() const;
     const float getY() const;
+    const float getMagnitude() const;
 
     const sf::Color getColor() const;
     const sf::Vector2i getOrigin() const;
@@ -44,7 +48,8 @@ public:
 
     // utilities
     float getNorm() const;
-    VectorShape &normalize(const float &radius);
+    void normalize(const float &radius);
+    void rotate(float angle);
 
     // update
     void update();

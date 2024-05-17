@@ -25,7 +25,7 @@ void Background::initVariables(sf::RenderWindow *target)
     this->yAxisShape.setPosition(yAxis, 0);
 
     this->unitCircle.setPosition(this->yAxis, this->xAxis);
-    this->unitCircle.setRadius(150);
+    this->unitCircle.setRadius(200);
     this->unitCircle.setOrigin(this->unitCircle.getLocalBounds().width / 2, this->unitCircle.getGlobalBounds().height / 2);
     this->unitCircle.setOutlineThickness(2);
     this->unitCircle.setOutlineColor(this->xAxisColor);

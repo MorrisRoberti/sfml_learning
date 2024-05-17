@@ -32,6 +32,7 @@ VectorShape::VectorShape(float x, float y, const sf::Vector2i origin)
 void VectorShape::initVariables()
 {
     this->line = sf::VertexArray(sf::Lines, 2);
+    this->currentAngle = 0;
 
     this->line[0].position = sf::Vector2f(this->origin.x, this->origin.y);
     this->line[0].color = this->color;
@@ -60,14 +61,24 @@ float VectorShape::getNorm() const
     return static_cast<float>(std::sqrt(std::pow(this->x, 2) + std::pow(this->y, 2)));
 }
 
-VectorShape &VectorShape::normalize(const float &radius)
+void VectorShape::normalize(const float &radius)
 {
     sf::Vector2f normalizedVector(this->x / this->getNorm(), this->y / this->getNorm());
-    VectorShape *returnVector = new VectorShape(normalizedVector.x * radius, normalizedVector.y * radius, this->origin);
+    *this = VectorShape(normalizedVector.x * radius, normalizedVector.y * radius, this->origin);
+}
 
-    returnVector->setColor(sf::Color::White);
+void VectorShape::rotate(float angle)
+{
 
-    return *returnVector;
+    this->currentAngle += angle;
+
+    this->line[1].position.x = -((this->x * std::cos(this->currentAngle)) - (this->y * std::sin(this->currentAngle)));
+    this->line[1].position.y = -((this->x * std::sin(this->currentAngle)) + (this->y * std::cos(this->currentAngle)));
+
+    this->x = this->line[1].position.x;
+    this->y = this->line[1].position.y;
+
+    this->normalize(200);
 }
 
 // getters

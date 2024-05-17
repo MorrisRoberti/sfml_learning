@@ -19,13 +19,15 @@ void Game::initWindow()
 {
     this->videoMode = sf::VideoMode(900, 900);
     this->window = new sf::RenderWindow(this->videoMode, "Transformations", sf::Style::Close);
+    this->window->setFramerateLimit(60);
 }
 
 void Game::initVariables()
 {
     this->background = new Background(this->window);
     this->vec = VectorShape(200.f, 50.f, this->background->getOrigin());
-    this->vec2 = this->vec.normalize(this->background->getUnitCircle().getRadius());
+    this->vec2 = VectorShape(this->vec);
+    this->vec2.normalize(this->background->getUnitCircle().getRadius());
 };
 
 void Game::pollEvents()
@@ -41,11 +43,13 @@ void Game::pollEvents()
         case sf::Event::KeyPressed:
             if (this->event.key.code == sf::Keyboard::Escape)
                 this->window->close();
+            else if (this->event.key.code == sf::Keyboard::D)
+                this->vec2.rotate(0.01f);
+            else if (this->event.key.code == sf::Keyboard::A)
+                this->vec2.rotate(-0.01f);
+
             break;
         }
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (sf::Mouse::getPosition(*this->window).x == this->vec2.getX()) && (sf::Mouse::getPosition(*this->window).y == this->vec2.getY()))
-        std::cout << "hello" << std::endl;
 }
 
 void Game::run()
