@@ -19,6 +19,8 @@ private:
     VectorShape vec;
     VectorShape vec2;
 
+    sf::CircleShape mousePointer;
+
     // init
     void initWindow();
     void initVariables();

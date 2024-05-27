@@ -61,10 +61,10 @@ float VectorShape::getNorm() const
     return static_cast<float>(std::sqrt(std::pow(this->x, 2) + std::pow(this->y, 2)));
 }
 
-void VectorShape::normalize(const float &radius)
+VectorShape VectorShape::normalize(float x, float y, const float &radius)
 {
-    sf::Vector2f normalizedVector(this->x / this->getNorm(), this->y / this->getNorm());
-    *this = VectorShape(normalizedVector.x * radius, normalizedVector.y * radius, this->origin);
+    sf::Vector2f normalizedVector(x / this->getNorm(), y / this->getNorm());
+    return VectorShape(normalizedVector.x * radius, normalizedVector.y * radius, this->origin);
 }
 
 void VectorShape::rotate(float angle)
@@ -78,7 +78,7 @@ void VectorShape::rotate(float angle)
     this->x = this->line[1].position.x;
     this->y = this->line[1].position.y;
 
-    this->normalize(200);
+    // this->normalize(200);
 }
 
 // getters
@@ -106,11 +106,13 @@ const sf::Vector2i VectorShape::getOrigin() const
 void VectorShape::setX(float newX)
 {
     this->x = newX;
+    this->line[1].position.x = this->x;
 }
 
 void VectorShape::setY(float newY)
 {
     this->y = newY;
+    this->line[1].position.y = this->y;
 }
 
 void VectorShape::setColor(sf::Color color)

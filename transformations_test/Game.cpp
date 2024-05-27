@@ -27,11 +27,16 @@ void Game::initVariables()
     this->background = new Background(this->window);
     this->vec = VectorShape(200.f, 50.f, this->background->getOrigin());
     this->vec2 = VectorShape(this->vec);
-    this->vec2.normalize(this->background->getUnitCircle().getRadius());
+
+    this->mousePointer.setFillColor(sf::Color::Blue);
+    this->mousePointer.setRadius(10);
+    this->mousePointer.setPosition(sf::Vector2f(sf::Mouse::getPosition(*window)));
+    this->mousePointer.setOrigin(this->mousePointer.getLocalBounds().height / 2, this->mousePointer.getLocalBounds().width / 2);
 };
 
 void Game::pollEvents()
 {
+    float norm;
     while (this->window->pollEvent(this->event))
         switch (this->event.type)
         {
@@ -47,6 +52,20 @@ void Game::pollEvents()
                 this->vec2.rotate(0.01f);
             else if (this->event.key.code == sf::Keyboard::A)
                 this->vec2.rotate(-0.01f);
+        case sf::Event::MouseMoved:
+            this->mousePointer.setPosition(sf::Vector2f(sf::Mouse::getPosition(*window)));
+
+            // direction vector
+            sf::Vector2f dir = {(static_cast<float>(sf::Mouse::getPosition(*window).x) - this->vec2.getOrigin().x), (static_cast<float>(sf::Mouse::getPosition(*window).y) - this->vec2.getOrigin().y)};
+
+            // normalization
+            norm = std::sqrt(std::pow(dir.x, 2) + std::pow(dir.y, 2));
+            dir = (dir / norm);
+            dir.x *= 200;
+            dir.y *= 200;
+
+            this->vec2.setX(dir.x + this->vec2.getOrigin().x);
+            this->vec2.setY(dir.y + this->vec2.getOrigin().y);
 
             break;
         }
@@ -74,8 +93,8 @@ void Game::render(sf::RenderWindow *target)
     target->clear();
 
     this->background->render(target);
-    // this->vec.render(target);
     this->vec2.render(target);
+    target->draw(this->mousePointer);
 
     target->display();
 }

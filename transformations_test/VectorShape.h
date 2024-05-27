@@ -18,12 +18,12 @@ private:
     float currentAngle;
 
     sf::Vector2i origin;
-    sf::VertexArray line;
 
     // init
     void initVariables();
 
 public:
+    sf::VertexArray line;
     // constructor
     VectorShape();
     VectorShape(const VectorShape &vec);
@@ -48,7 +48,7 @@ public:
 
     // utilities
     float getNorm() const;
-    void normalize(const float &radius);
+    VectorShape normalize(float x, float y, const float &radius);
     void rotate(float angle);
 
     // update
