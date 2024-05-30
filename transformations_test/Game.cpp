@@ -32,6 +32,37 @@ void Game::initVariables()
     this->mousePointer.setRadius(10);
     this->mousePointer.setPosition(sf::Vector2f(sf::Mouse::getPosition(*window)));
     this->mousePointer.setOrigin(this->mousePointer.getLocalBounds().height / 2, this->mousePointer.getLocalBounds().width / 2);
+
+    this->tileSet = new sf::Texture();
+    this->tileSet->loadFromFile("assets/overworld.png");
+
+    this->tileMap = new TileMap(this->tileSet, 46, 46, 16.f, 250.f);
+
+    int vectormap[20][7] = {
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 1, 1, 1, 1},
+        {0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 1, 1, 1, 1},
+        {0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1},
+
+    };
+
+    this->tileMap->loadMap(vectormap, 7, 20);
 };
 
 void Game::pollEvents()
@@ -92,9 +123,10 @@ void Game::render(sf::RenderWindow *target)
 {
     target->clear();
 
-    this->background->render(target);
-    this->vec2.render(target);
-    target->draw(this->mousePointer);
+    // this->background->render(target);
+    this->tileMap->draw(target, sf::RenderStates::Default);
+    // this->vec2.render(target);
+    // target->draw(this->mousePointer);
 
     target->display();
 }

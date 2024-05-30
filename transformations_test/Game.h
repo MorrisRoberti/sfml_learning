@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Backgorund.h"
+#include "TileMap.h"
 #include "VectorShape.h"
 
 #include <SFML/System.hpp>
@@ -18,6 +19,9 @@ private:
     Background *background;
     VectorShape vec;
     VectorShape vec2;
+
+    TileMap *tileMap;
+    sf::Texture *tileSet;
 
     sf::CircleShape mousePointer;
 
