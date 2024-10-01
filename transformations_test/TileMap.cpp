@@ -35,25 +35,12 @@ void TileMap::draw(sf::RenderWindow *target, sf::RenderStates states)
     target->draw(this->map, states);
 }
 
-void TileMap::loadMap(int vectorMap[20][7], int width, int height)
+void TileMap::loadMap(int vectorMap[7][20], int width, int height)
 {
     for (int i = 0; i < width; i++)
         for (int j = 0; j < height; j++)
         {
-            float x, y;
-            switch (vectorMap[j][i])
-            {
-            case 0:
-                x = 0;
-                y = 0;
-
-                break;
-            case 1:
-                x = 0;
-                y = 1;
-                break;
-            }
-            Tile *tile = new Tile(x, y, sf::Color::White);
+            Tile *tile = new Tile(vectorMap[i][j]);
 
             this->addTileToMap(*tile, sf::Vector2f((float)i / 10, (float)j / 10));
         }

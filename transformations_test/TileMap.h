@@ -22,5 +22,5 @@ public:
     TileMap(sf::Texture *tileset, int width, int height, float tileTextureDimension, float tileWorldDimension);
     void draw(sf::RenderWindow *target, sf::RenderStates states);
 
-    void loadMap(int vectorMap[20][7], int width, int height);
+    void loadMap(int vectorMap[7][20], int width, int height);
 };
