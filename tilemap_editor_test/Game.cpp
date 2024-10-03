@@ -113,9 +113,19 @@ public:
             }
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                // I map the pixel to the view coordinates
-                sf::Vector2f pixelCoords = this->window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), this->standardView);
-                this->grid->checkClickedCell(pixelCoords);
+                if (event.mouseButton.button == sf::Mouse::Right)
+                {
+                    // I map the pixel to the view coordinates
+                    const sf::Vector2f pixelCoords = this->window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), this->standardView);
+                    this->grid->removeTexture(pixelCoords);
+                }
+                else if (event.mouseButton.button == sf::Mouse::Left)
+                {
+
+                    // I map the pixel to the view coordinates
+                    const sf::Vector2f pixelCoords = this->window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), this->standardView);
+                    this->grid->setCellTexture(pixelCoords);
+                }
             }
         }
     }
