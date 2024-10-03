@@ -1,7 +1,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include "Grid.cpp"
 
 class Game
@@ -10,8 +9,10 @@ private:
     sf::RenderWindow *window;
     sf::Texture *background;
     sf::Sprite backgroundSprite;
-    sf::View standardView;
+
     sf::RectangleShape *sidebarRectangle;
+    sf::RectangleShape *standardViewRectangle;
+    sf::View standardView;
     sf::View sidebarView;
 
     float cursor_speed;
@@ -25,11 +26,11 @@ private:
 
         this->cursor_speed = 15;
 
-        this->grid = new Grid(20, 20, 100, sf::Vector2f(0.8f, 1));
-
         // main view
         this->standardView.setCenter(this->window->getSize().x / 2, this->window->getSize().y / 2);
-        this->standardView.setViewport(sf::FloatRect(0.2f, 0.0f, 0.8f, 1));
+        this->standardView.setViewport(sf::FloatRect(0.2f, 0.0f, 1, 1));
+
+        this->grid = new Grid(20, 20, 100, sf::Vector2f(1, 1));
 
         // sidebar view
         this->sidebarView.setViewport(sf::FloatRect(0.0f, 0.0f, 0.2f, 1));
@@ -44,6 +45,8 @@ public:
 
         this->initializeWindow();
     }
+
+    // implement destructor ;P
 
     void pollEvents()
     {
@@ -108,6 +111,12 @@ public:
                     this->standardView.move(0, -10 * this->cursor_speed);
                 }
             }
+            if (event.type == sf::Event::MouseButtonPressed)
+            {
+                // I map the pixel to the view coordinates
+                sf::Vector2f pixelCoords = this->window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), this->standardView);
+                this->grid->checkClickedCell(pixelCoords);
+            }
         }
     }
 
@@ -125,7 +134,6 @@ public:
         this->window->draw(*this->sidebarRectangle);
 
         this->window->setView(this->standardView);
-        // this->window->draw(this->backgroundSprite);
         this->grid->draw(this->window, sf::RenderStates::Default);
 
         // End the current frame and display its contents on screen
