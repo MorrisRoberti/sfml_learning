@@ -1,4 +1,3 @@
-#include <vector>
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -20,6 +19,9 @@ public:
         this->cell_width = cell_dimension * scale.y;
         this->cell_height = cell_dimension * scale.y;
 
+        this->width = width;
+        this->height = height;
+
         this->gridColor = new sf::Color(211, 211, 211, 130);
         this->gridCells = new sf::VertexArray(sf::PrimitiveType::Lines, (uint)(width * height * 8));
         this->actualTextureCells = new sf::VertexArray(sf::PrimitiveType::Triangles, (uint)(width * height * 6));
@@ -35,6 +37,12 @@ public:
     }
 
     // implement destructor ;P
+    ~Grid()
+    {
+        delete this->gridColor;
+        delete[] this->gridCells;
+        delete[] this->actualTextureCells;
+    }
 
     void addCellToTheBuffer(sf::VertexArray &cells, int starting_X, int starting_Y, const sf::Color &color, const sf::PrimitiveType primitiveType)
     {
@@ -93,6 +101,7 @@ public:
 
         if (mousePos.x >= 0 && mousePos.x <= (this->cell_width * this->width) && mousePos.y >= 0 && mousePos.y <= (this->cell_height * this->height))
         {
+
             return true;
         }
         return false;
@@ -101,6 +110,7 @@ public:
     // i set the texture to the cell starting from the top left corner and using the cell_dimension attribute
     void setCellTexture(const sf::Vector2f mousePos)
     {
+
         if (this->checkClickedCell(mousePos))
         {
             sf::Vector2i cell = sf::Vector2i(static_cast<int>(mousePos.x / this->cell_width), static_cast<int>(mousePos.y / this->cell_height));
@@ -114,14 +124,13 @@ public:
         if (this->checkClickedCell(mousePos))
         {
             sf::Vector2i cell = sf::Vector2i(static_cast<int>(mousePos.x / this->cell_width), static_cast<int>(mousePos.y / this->cell_height));
-            // this has to be fixed, because it doesn't really remove the thing, it just adds a black layer on top (I THINK)
-            this->addCellToTheBuffer(*this->actualTextureCells, cell.x, cell.y, sf::Color::White, this->actualTextureCells->getPrimitiveType());
+            this->addCellToTheBuffer(*this->actualTextureCells, cell.x, cell.y, sf::Color::Black, this->actualTextureCells->getPrimitiveType());
         }
     }
 
     void draw(sf::RenderWindow *target, sf::RenderStates states)
     {
-        target->draw(*this->gridCells, states);
         target->draw(*this->actualTextureCells, states);
+        target->draw(*this->gridCells, states);
     }
 };

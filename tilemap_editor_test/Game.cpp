@@ -46,8 +46,6 @@ public:
         this->initializeWindow();
     }
 
-    // implement destructor ;P
-
     void pollEvents()
     {
         // Event processing
