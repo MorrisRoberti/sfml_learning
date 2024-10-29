@@ -12,8 +12,12 @@ private:
 
     sf::RectangleShape *sidebarRectangle;
     sf::RectangleShape *standardViewRectangle;
+    sf::RectangleShape *textureViewRectangle;
+    sf::RectangleShape *loadTextureButton;
+
     sf::View standardView;
     sf::View sidebarView;
+    sf::View textureView;
 
     float cursor_speed;
 
@@ -37,6 +41,16 @@ private:
         this->sidebarRectangle = new sf::RectangleShape(sf::Vector2f(this->sidebarView.getSize().x, this->sidebarView.getSize().y));
         this->sidebarRectangle->setPosition(0.f, 0.f);
         this->sidebarRectangle->setFillColor(sf::Color(42, 43, 51, 255));
+
+        this->loadTextureButton = new sf::RectangleShape(sf::Vector2f(this->sidebarRectangle->getSize().x - (0.05f * this->sidebarRectangle->getSize().x), 0.05f * this->sidebarRectangle->getSize().y));
+        this->loadTextureButton->setPosition(0.025f * this->sidebarRectangle->getSize().x, 0.63f * this->sidebarRectangle->getSize().y);
+        this->loadTextureButton->setFillColor(sf::Color(25.0f, 26.0f, 36.0f, 255));
+
+        // texture view
+        this->textureView.setViewport(sf::FloatRect(0.005f, 0.7f, 0.190f, 0.295f));
+        this->textureViewRectangle = new sf::RectangleShape(sf::Vector2f(this->textureView.getSize().x, this->textureView.getSize().y));
+        this->textureViewRectangle->setPosition(0.f, 0.f);
+        this->textureViewRectangle->setFillColor(sf::Color(0, 0, 0, 255));
     }
 
 public:
@@ -140,6 +154,10 @@ public:
 
         this->window->setView(this->sidebarView);
         this->window->draw(*this->sidebarRectangle);
+        this->window->draw(*this->loadTextureButton);
+
+        this->window->setView(this->textureView);
+        this->window->draw(*this->textureViewRectangle);
 
         this->window->setView(this->standardView);
         this->grid->draw(this->window, sf::RenderStates::Default);
