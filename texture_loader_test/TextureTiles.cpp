@@ -8,7 +8,7 @@ const void TextureTiles::slice()
 TextureTiles::TextureTiles(const sf::Vector2f containerSize)
 {
 
-    textures = std::vector<sf::Texture>();
+    textures = std::vector<sf::Texture *>();
     spritesOfTextures = std::vector<sf::Sprite>();
 
     textureFile = nullptr;
@@ -29,13 +29,25 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize, const std::string t
 
 TextureTiles::~TextureTiles()
 {
-    textures.~vector();
+    textures.~vector();     // i want to destroy the allocated textures
+    for (auto p : textures) // then i want to deallocate the pointers to the textures
+    {
+        delete p;
+    }
     delete textureFile;
 }
 
 TextureTiles::TextureTiles(const TextureTiles &other)
 {
-    textures = other.textures;
+
+    // i want to perform a deep copy
+
+    // for (auto p : other.textures)
+    // {
+    //     sf::Texture *tmp = new sf::Texture();
+    //     tmp = &p;
+    //     textures.push_back(p);
+    // }
     spritesOfTextures = other.spritesOfTextures;
 
     textureFile = other.textureFile;

@@ -5,7 +5,7 @@
 class TextureTiles
 {
 private:
-    std::vector<sf::Texture> textures;         // this is the array of textures that have to be drawn
+    std::vector<sf::Texture *> textures;       // this is the array of textures that have to be drawn
     std::vector<sf::Sprite> spritesOfTextures; // this array is the actual one drawn into the container to show available textures
     sf::Texture *textureFile;                  // the original file where the texture are stored together
     std::string textureFileName;
