@@ -1,13 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <iostream>
 
 class TextureTiles
 {
 private:
-    std::vector<sf::Texture *> textures;       // this is the array of textures that have to be drawn
-    std::vector<sf::Sprite> spritesOfTextures; // this array is the actual one drawn into the container to show available textures
-    sf::Texture *textureFile;                  // the original file where the texture are stored together
+    std::vector<sf::Texture *> textures;         // this is the array of textures that have to be drawn
+    std::vector<sf::Sprite *> spritesOfTextures; // this array is the actual one drawn into the container to show available textures
+    sf::Image *textureFile;                      // the original file where the texture are stored together
     std::string textureFileName;
     sf::Vector2f textureFileDim; // the dimension of the file that stores the textures
     float singleTextureDim;      // the dimension of the single textures in the textureFile (the texture have to be square)
@@ -17,6 +18,8 @@ private:
     const void slice();
 
 public:
+    TextureTiles();
+
     TextureTiles(const sf::Vector2f containerSize); // only creates the rectangle to contain the textures
 
     TextureTiles(const sf::Vector2f containerSize, const std::string textureFileNameString, const sf::Vector2f textureFileDimension, float singleTextureDimension);
@@ -37,5 +40,5 @@ public:
 
     const void load(const std::string textureFileNameString, const sf::Vector2f textureFileDimension, float singleTextureDimension);
 
-    const std::vector<sf::Texture> &getTextures() const;
+    const std::vector<sf::Texture *> &getTextures() const;
 };
