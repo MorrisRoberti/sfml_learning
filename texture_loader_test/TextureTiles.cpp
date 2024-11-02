@@ -34,6 +34,22 @@ const void TextureTiles::slice()
     }
 }
 
+void TextureTiles::cleanup()
+{
+    std::cout << "Cleanup" << std::endl;
+    for (auto p : textures)
+    {
+        delete p;
+    }
+
+    for (auto p : spritesOfTextures)
+    {
+        delete p;
+    }
+
+    delete textureFile;
+}
+
 TextureTiles::TextureTiles()
 {
     std::cout << "Empty Constructor" << std::endl;
@@ -91,18 +107,7 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize, const std::string t
 TextureTiles::~TextureTiles()
 {
     std::cout << "Destructor" << std::endl;
-    for (auto p : textures)
-    {
-        delete p;
-    }
-
-    for (auto p : spritesOfTextures)
-    {
-        delete p;
-    }
-
-    std::cout << "hwlo" << std::endl;
-    delete textureFile;
+    cleanup();
 }
 
 TextureTiles::TextureTiles(const TextureTiles &other)
@@ -134,25 +139,18 @@ TextureTiles::TextureTiles(TextureTiles &&other)
 {
     std::cout << "Move Constructor" << std::endl;
 
-    for (auto p : other.textures)
-    {
-        sf::Texture *tmp;
-        tmp = new sf::Texture(*p);
-        textures.push_back(tmp);
-    }
-    for (auto p : other.spritesOfTextures)
-    {
-        sf::Sprite *tmp;
-        tmp = new sf::Sprite(*p);
-        spritesOfTextures.push_back(tmp);
-    }
+    textures = std::move(other.textures);
 
-    textureFile = new sf::Image(*other.textureFile);
+    spritesOfTextures = std::move(other.spritesOfTextures);
+
+    textureFile = other.textureFile;
     textureFileName = other.textureFileName;
     textureFileDim = other.textureFileDim;
     singleTextureDim = other.singleTextureDim;
 
     container = other.container;
+
+    other.textureFile = nullptr;
 }
 
 TextureTiles &TextureTiles::operator=(const TextureTiles &other)
@@ -161,6 +159,10 @@ TextureTiles &TextureTiles::operator=(const TextureTiles &other)
 
     if (textureFile != other.textureFile)
     {
+
+        // i need to empty textures and sprites
+        cleanup();
+
         for (auto p : other.textures)
         {
             sf::Texture *tmp = new sf::Texture(*p);
@@ -172,13 +174,12 @@ TextureTiles &TextureTiles::operator=(const TextureTiles &other)
             spritesOfTextures.push_back(tmp);
         }
 
-        delete textureFile;
         textureFile = new sf::Image(*other.textureFile);
 
         textureFileName = other.textureFileName;
         textureFileDim = other.textureFileDim;
         singleTextureDim = other.singleTextureDim;
-        container = container;
+        container = other.container;
     }
 
     return *this;
@@ -190,28 +191,20 @@ TextureTiles &TextureTiles::operator=(TextureTiles &&other)
 
     if (textureFile != other.textureFile)
     {
-        for (auto p : other.textures)
-        {
-            sf::Texture *tmp;
-            tmp = new sf::Texture(*p);
-            textures.push_back(tmp);
-        }
 
-        for (auto p : other.spritesOfTextures)
-        {
-            sf::Sprite *tmp;
-            tmp = new sf::Sprite(*p);
-            spritesOfTextures.push_back(tmp);
-        }
+        // i need to empty textures and sprites
+        cleanup();
 
-        delete textureFile;
+        textures = std::move(other.textures);
 
-        textureFile = new sf::Image(*other.textureFile);
+        spritesOfTextures = std::move(other.spritesOfTextures);
+
+        textureFile = other.textureFile;
 
         textureFileName = other.textureFileName;
         textureFileDim = other.textureFileDim;
         singleTextureDim = other.singleTextureDim;
-        container = container;
+        container = other.container;
     }
 
     other.textureFile = nullptr;
@@ -235,13 +228,16 @@ const void TextureTiles::load(const std::string textureFileNameString, const sf:
 {
     std::cout << "Load" << std::endl;
 
-    delete textureFile;
+    cleanup();
 
     textureFile = new sf::Image();
     textureFileName = textureFileNameString;
     textureFileDim = textureFileDimension;
 
     singleTextureDim = singleTextureDimension;
+
+    textures = std::vector<sf::Texture *>();
+    spritesOfTextures = std::vector<sf::Sprite *>();
 
     if (!(textureFile->loadFromFile(textureFileName)))
     {

@@ -16,6 +16,7 @@ private:
     sf::RectangleShape container;
 
     const void slice();
+    void cleanup();
 
 public:
     TextureTiles();
