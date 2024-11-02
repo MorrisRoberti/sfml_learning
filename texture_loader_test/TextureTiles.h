@@ -16,6 +16,7 @@ private:
     sf::RectangleShape container;
 
     const void slice();
+    const void arrangeTexturesInContainer();
     void cleanup();
 
 public:

@@ -16,7 +16,7 @@ const void TextureTiles::slice()
         }
     }
 
-    std::cout << (numberOfTextures.x * numberOfTextures.y) << std::endl;
+    int j = 0;
     for (int i = 0; i < numberOfTextures.x * numberOfTextures.y; i++)
     {
         sf::Texture *tmp = new sf::Texture();
@@ -27,10 +27,48 @@ const void TextureTiles::slice()
         else
         {
             sf::Sprite *tmpSprite = new sf::Sprite(*tmp);
-            tmpSprite->setPosition(50, i * 20);
+            // tmpSprite->setPosition(50, i * 20);
             spritesOfTextures.push_back(tmpSprite);
             textures.push_back(tmp);
         }
+    }
+}
+
+const void TextureTiles::arrangeTexturesInContainer()
+{
+    sf::FloatRect containerGlobalBounds = container.getGlobalBounds();
+
+    float newSingleTextureDim = containerGlobalBounds.width / 4;
+    float textureScaling = 0.25f;
+
+    int tmp = 0;
+    for (int i = 0, j = 0; i < spritesOfTextures.size(); i++)
+    {
+
+        spritesOfTextures[i]->setScale(textureScaling, textureScaling);
+
+        // FIX: so basically i want to draw 4 textures per row inside the container
+
+        // if (j < 4)
+        // {
+
+        //     spritesOfTextures[i]->setPosition(j * newSingleTextureDim * textureScaling, i * newSingleTextureDim * textureScaling);
+        //     j++;
+        // }
+        // else
+        // {
+        //     j = 0;
+        // }
+
+        // if (i )
+        // {
+        //     spritesOfTextures[i]->setPosition(i * newSingleTextureDim * 0.25f, j);
+        // }
+        // else
+        // {
+        //     j++;
+        //     spritesOfTextures[i]->setPosition(i * newSingleTextureDim * 0.25f, j * newSingleTextureDim * 0.25f);
+        // }
     }
 }
 
@@ -248,6 +286,9 @@ const void TextureTiles::load(const std::string textureFileNameString, const sf:
         std::cout << "successfully loaded" << std::endl;
 
         slice();
+
+        // now my textures/spritesOfTextures are populated so I can arrange them and draw them inside the container
+        arrangeTexturesInContainer();
     }
 }
 
