@@ -6,7 +6,6 @@ const void TextureTiles::slice()
 
     sf::Vector2i numberOfTextures = sf::Vector2i(static_cast<int>(textureFileDim.x / singleTextureDim), static_cast<int>(textureFileDim.y / singleTextureDim));
     std::vector<sf::IntRect> rectsToSliceTexture = std::vector<sf::IntRect>();
-
     // then for each texture stored I create a pointer and insert it in the textures array
     for (int i = 0; i < numberOfTextures.x; i++)
     {
@@ -17,7 +16,7 @@ const void TextureTiles::slice()
         }
     }
 
-    // ERROR IN HERE -> some problem with deallocation
+    std::cout << (numberOfTextures.x * numberOfTextures.y) << std::endl;
     for (int i = 0; i < numberOfTextures.x * numberOfTextures.y; i++)
     {
         sf::Texture *tmp = new sf::Texture();
@@ -79,10 +78,6 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize, const std::string t
     spritesOfTextures = std::vector<sf::Sprite *>();
 
     textureFile = new sf::Image();
-    textureFileName = textureFileNameString;
-    textureFileDim = textureFileDimension;
-
-    singleTextureDim = singleTextureDimension;
 
     container = sf::RectangleShape(containerSize);
     container.setPosition(0.0f, 0.0f);
@@ -106,6 +101,7 @@ TextureTiles::~TextureTiles()
         delete p;
     }
 
+    std::cout << "hwlo" << std::endl;
     delete textureFile;
 }
 
@@ -119,9 +115,14 @@ TextureTiles::TextureTiles(const TextureTiles &other)
         sf::Texture *tmp = new sf::Texture(*p);
         textures.push_back(tmp);
     }
-    spritesOfTextures = other.spritesOfTextures;
 
-    textureFile = other.textureFile;
+    for (auto p : other.spritesOfTextures)
+    {
+        sf::Sprite *tmp = new sf::Sprite(*p);
+        spritesOfTextures.push_back(tmp);
+    }
+
+    textureFile = new sf::Image(*other.textureFile);
     textureFileName = other.textureFileName;
     textureFileDim = other.textureFileDim;
     singleTextureDim = other.singleTextureDim;
@@ -135,20 +136,23 @@ TextureTiles::TextureTiles(TextureTiles &&other)
 
     for (auto p : other.textures)
     {
-        sf::Texture *tmp = p;
-        p = nullptr;
+        sf::Texture *tmp;
+        tmp = new sf::Texture(*p);
         textures.push_back(tmp);
     }
-    spritesOfTextures = other.spritesOfTextures;
+    for (auto p : other.spritesOfTextures)
+    {
+        sf::Sprite *tmp;
+        tmp = new sf::Sprite(*p);
+        spritesOfTextures.push_back(tmp);
+    }
 
-    textureFile = other.textureFile;
+    textureFile = new sf::Image(*other.textureFile);
     textureFileName = other.textureFileName;
     textureFileDim = other.textureFileDim;
     singleTextureDim = other.singleTextureDim;
 
     container = other.container;
-
-    other.textureFile = nullptr;
 }
 
 TextureTiles &TextureTiles::operator=(const TextureTiles &other)
@@ -162,7 +166,11 @@ TextureTiles &TextureTiles::operator=(const TextureTiles &other)
             sf::Texture *tmp = new sf::Texture(*p);
             textures.push_back(tmp);
         }
-        spritesOfTextures = other.spritesOfTextures;
+        for (auto p : other.spritesOfTextures)
+        {
+            sf::Sprite *tmp = new sf::Sprite(*p);
+            spritesOfTextures.push_back(tmp);
+        }
 
         delete textureFile;
         textureFile = new sf::Image(*other.textureFile);
@@ -184,15 +192,21 @@ TextureTiles &TextureTiles::operator=(TextureTiles &&other)
     {
         for (auto p : other.textures)
         {
-            sf::Texture *tmp = p;
-            p = nullptr;
+            sf::Texture *tmp;
+            tmp = new sf::Texture(*p);
             textures.push_back(tmp);
         }
 
-        spritesOfTextures = other.spritesOfTextures;
+        for (auto p : other.spritesOfTextures)
+        {
+            sf::Sprite *tmp;
+            tmp = new sf::Sprite(*p);
+            spritesOfTextures.push_back(tmp);
+        }
 
         delete textureFile;
-        *textureFile = sf::Image(*other.textureFile);
+
+        textureFile = new sf::Image(*other.textureFile);
 
         textureFileName = other.textureFileName;
         textureFileDim = other.textureFileDim;
@@ -217,9 +231,18 @@ const void TextureTiles::draw(sf::RenderTarget &window) const
         window.draw(*spritesOfTextures[i]);
 }
 
-const void TextureTiles::load(const std::string textureFileName, const sf::Vector2f textureFileDimension, float singleTextureDimension)
+const void TextureTiles::load(const std::string textureFileNameString, const sf::Vector2f textureFileDimension, float singleTextureDimension)
 {
     std::cout << "Load" << std::endl;
+
+    delete textureFile;
+
+    textureFile = new sf::Image();
+    textureFileName = textureFileNameString;
+    textureFileDim = textureFileDimension;
+
+    singleTextureDim = singleTextureDimension;
+
     if (!(textureFile->loadFromFile(textureFileName)))
     {
         std::cout << "TEXTURES:: Failed to load  the texture" << std::endl;
@@ -227,10 +250,9 @@ const void TextureTiles::load(const std::string textureFileName, const sf::Vecto
     else
     {
         std::cout << "successfully loaded" << std::endl;
-    }
 
-    // i slice them
-    slice();
+        slice();
+    }
 }
 
 const std::vector<sf::Texture *> &TextureTiles::getTextures() const

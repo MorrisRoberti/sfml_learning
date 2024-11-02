@@ -7,8 +7,12 @@ int main()
 
     sf::Vector2f containerSize = sf::Vector2f(200.0f, 250.0f);
     sf::Vector2f textureFileDimension = sf::Vector2f(96.0f, 96.0f);
+    sf::Vector2f textureFileDimension2 = sf::Vector2f(1152.0f, 1536.0f);
 
     TextureTiles textureTiles = TextureTiles(containerSize, "all_gnomes.png", textureFileDimension, 32.0f);
+    TextureTiles t2 = TextureTiles(std::move(textureTiles));
+    ;
+    // textureTiles.load("Warrior_Yellow.png", textureFileDimension2, 192);
     while (window.isOpen())
     {
         sf::Event event;
@@ -21,7 +25,7 @@ int main()
         window.clear();
 
         // draw
-        textureTiles.draw(window);
+        t2.draw(window);
 
         window.display();
     }
