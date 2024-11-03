@@ -39,16 +39,20 @@ const void TextureTiles::arrangeTexturesInContainer()
     sf::FloatRect containerGlobalBounds = container.getGlobalBounds();
 
     float newSingleTextureDim = containerGlobalBounds.width / 4;
-    float textureScaling = 0.25f;
 
-    // the textureScaling has to be negative if the singleTextureDim is <= newSingleTextureDim and positive otherwise
-    // in this way I upscale the texutures if they are too small and downscale them if they are too big
+    float textureScaling = 0;
 
-    int tmp = 0;
-    int j = 0;
-    for (int i = 0; i < spritesOfTextures.size(); i++)
+    if (singleTextureDim > newSingleTextureDim)
     {
+        textureScaling = newSingleTextureDim / newSingleTextureDim * 0.5f;
+    }
+    else
+    {
+        textureScaling = 20 * (newSingleTextureDim - singleTextureDim) / newSingleTextureDim;
+    }
 
+    for (int i = 0, tmp = 0, j = 0; i < spritesOfTextures.size(); i++)
+    {
         spritesOfTextures[i]->setScale(textureScaling, textureScaling);
 
         if (j == 4)
