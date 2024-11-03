@@ -13,9 +13,9 @@ int main()
 
     // TextureTiles textureTiles = TextureTiles(containerSize, "all_gnomes.png", textureFileDimension, 32.0f);
     TextureTiles t2 = TextureTiles(containerSize, "Warrior_Yellow.png", textureFileDimension2, 192);
-    // t2.load("Warrior_Yellow.png", textureFileDimension2, 192);
     // t2.load("Dynamite.png", textureFileDimension3, 64.0f);
-    // textureTiles.load("Torch_Red.png", textureFileDimension4, 192.0f);
+    t2.load("Torch_Red.png", textureFileDimension4, 192.0f);
+    t2.load("Warrior_Yellow.png", textureFileDimension2, 192);
 
     // textureTiles.load("Warrior_Yellow.png", textureFileDimension2, 192);
     while (window.isOpen())

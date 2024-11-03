@@ -35,35 +35,21 @@ const void TextureTiles::slice()
 
 const void TextureTiles::arrangeTexturesInContainer()
 {
-    sf::FloatRect containerGlobalBounds = container.getGlobalBounds();
 
-    float newSingleTextureDim = containerGlobalBounds.width / 4;
-    float scaleX = 300.0f / 768.0f;         // Scale for width
-    float scaleY = 350.0f / 384.0f;         // Scale for height
-    float scale = std::min(scaleX, scaleY); // Use the smaller scale to fit
+    float heightOfAllRows = singleTextureDim * 3; // number of columns are 3, so i take the number of rows and multiplying it by texture height
 
-    float textureScaling = 0;
-
-    if (singleTextureDim > newSingleTextureDim)
-    {
-        textureScaling = newSingleTextureDim / newSingleTextureDim * 0.5f;
-    }
-    else
-    {
-        textureScaling = 20 * (newSingleTextureDim - singleTextureDim) / newSingleTextureDim;
-    }
+    float scale = view->getSize().x / heightOfAllRows; // Use the smaller scale to fit
 
     for (int i = 0, tmp = 0, j = 0; i < spritesOfTextures.size(); i++)
     {
-        spritesOfTextures[i]->setScale(textureScaling, textureScaling);
+        spritesOfTextures[i]->setScale(scale, scale);
 
-        if (j == 4)
-        {
-            j = 0;
-            tmp++;
-        }
-        spritesOfTextures[i]->setPosition(j * newSingleTextureDim, tmp * newSingleTextureDim);
-        j++;
+        int row = i / 3; // 3 textures per row
+        int col = i % 3;
+        float x = col * singleTextureDim * scale; // Position based on column
+        float y = row * singleTextureDim * scale; // Position based on row
+
+        spritesOfTextures[i]->setPosition(x, y);
     }
 }
 
@@ -255,7 +241,6 @@ TextureTiles &TextureTiles::operator=(TextureTiles &&other)
 
 const void TextureTiles::update()
 {
-    return void();
 }
 
 const void TextureTiles::draw(sf::RenderTarget &window) const
