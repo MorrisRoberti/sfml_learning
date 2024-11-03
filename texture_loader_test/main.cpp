@@ -13,7 +13,7 @@ int main()
     TextureTiles t2;
     t2 = textureTiles;
     t2.load("Warrior_Yellow.png", textureFileDimension2, 192);
-    ;
+
     // textureTiles.load("Warrior_Yellow.png", textureFileDimension2, 192);
     while (window.isOpen())
     {

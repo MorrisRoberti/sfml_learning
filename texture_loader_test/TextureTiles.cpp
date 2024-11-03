@@ -41,35 +41,23 @@ const void TextureTiles::arrangeTexturesInContainer()
     float newSingleTextureDim = containerGlobalBounds.width / 4;
     float textureScaling = 0.25f;
 
+    // the textureScaling has to be negative if the singleTextureDim is <= newSingleTextureDim and positive otherwise
+    // in this way I upscale the texutures if they are too small and downscale them if they are too big
+
     int tmp = 0;
-    for (int i = 0, j = 0; i < spritesOfTextures.size(); i++)
+    int j = 0;
+    for (int i = 0; i < spritesOfTextures.size(); i++)
     {
 
         spritesOfTextures[i]->setScale(textureScaling, textureScaling);
 
-        // FIX: so basically i want to draw 4 textures per row inside the container
-
-        if (j < 4)
-        {
-
-            spritesOfTextures[i]->setPosition(j * newSingleTextureDim * textureScaling, tmp * newSingleTextureDim * textureScaling);
-            j++;
-        }
-        else
+        if (j == 4)
         {
             j = 0;
             tmp++;
         }
-
-        // if (i )
-        // {
-        //     spritesOfTextures[i]->setPosition(i * newSingleTextureDim * 0.25f, j);
-        // }
-        // else
-        // {
-        //     j++;
-        //     spritesOfTextures[i]->setPosition(i * newSingleTextureDim * 0.25f, j * newSingleTextureDim * 0.25f);
-        // }
+        spritesOfTextures[i]->setPosition(j * newSingleTextureDim, tmp * newSingleTextureDim);
+        j++;
     }
 }
 
