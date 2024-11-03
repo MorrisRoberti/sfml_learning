@@ -65,7 +65,7 @@ const void TextureTiles::arrangeTexturesInContainer()
     }
 }
 
-void TextureTiles::cleanup()
+const void TextureTiles::cleanup()
 {
     std::cout << "Cleanup" << std::endl;
     if (textures.size() != 0)
@@ -92,10 +92,8 @@ void TextureTiles::cleanup()
     }
 }
 
-TextureTiles::TextureTiles()
+const void TextureTiles::initVariables()
 {
-    std::cout << "Empty Constructor" << std::endl;
-
     textures = std::vector<sf::Texture *>();
     spritesOfTextures = std::vector<sf::Sprite *>();
 
@@ -104,6 +102,13 @@ TextureTiles::TextureTiles()
     textureFileDim = sf::Vector2f(0.0f, 0.0f);
 
     singleTextureDim = 0.0f;
+}
+
+TextureTiles::TextureTiles()
+{
+    std::cout << "Empty Constructor" << std::endl;
+
+    initVariables();
 
     container = sf::RectangleShape(sf::Vector2f(300.0f, 350.0f));
     container.setPosition(0.0f, 0.0f);
@@ -114,14 +119,7 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize)
 {
     std::cout << "Container only Constructor" << std::endl;
 
-    textures = std::vector<sf::Texture *>();
-    spritesOfTextures = std::vector<sf::Sprite *>();
-
-    textureFile = nullptr;
-    textureFileName = "";
-    textureFileDim = sf::Vector2f(0.0f, 0.0f);
-
-    singleTextureDim = 0.0f;
+    initVariables();
 
     container = sf::RectangleShape(containerSize);
     container.setPosition(0.0f, 0.0f);
@@ -132,10 +130,7 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize, const std::string t
 {
     std::cout << "Load Constructor" << std::endl;
 
-    textures = std::vector<sf::Texture *>();
-    spritesOfTextures = std::vector<sf::Sprite *>();
-
-    textureFile = nullptr;
+    initVariables();
 
     container = sf::RectangleShape(containerSize);
     container.setPosition(0.0f, 0.0f);
@@ -199,7 +194,7 @@ TextureTiles &TextureTiles::operator=(const TextureTiles &other)
 {
     std::cout << "Assignment" << std::endl;
 
-    if (textureFile != other.textureFile)
+    if (textureFileName != other.textureFileName)
     {
         cleanup();
 
@@ -229,7 +224,7 @@ TextureTiles &TextureTiles::operator=(TextureTiles &&other)
 {
     std::cout << "Move Assigment" << std::endl;
 
-    if (textureFile != other.textureFile)
+    if (textureFileName != other.textureFileName)
     {
 
         cleanup();
@@ -267,29 +262,33 @@ const void TextureTiles::load(const std::string textureFileNameString, const sf:
 {
     std::cout << "Load" << std::endl;
 
-    cleanup();
-
-    textureFile = new sf::Image();
-    textureFileName = textureFileNameString;
-    textureFileDim = textureFileDimension;
-
-    singleTextureDim = singleTextureDimension;
-
-    textures = std::vector<sf::Texture *>();
-    spritesOfTextures = std::vector<sf::Sprite *>();
-
-    if (!(textureFile->loadFromFile(textureFileName)))
+    if (textureFileNameString != textureFileName)
     {
-        std::cout << "TEXTURES:: Failed to load  the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "successfully loaded" << std::endl;
 
-        slice();
+        cleanup();
 
-        // now my textures/spritesOfTextures are populated so I can arrange them and draw them inside the container
-        arrangeTexturesInContainer();
+        textureFile = new sf::Image();
+        textureFileName = textureFileNameString;
+        textureFileDim = textureFileDimension;
+
+        singleTextureDim = singleTextureDimension;
+
+        textures = std::vector<sf::Texture *>();
+        spritesOfTextures = std::vector<sf::Sprite *>();
+
+        if (!(textureFile->loadFromFile(textureFileName)))
+        {
+            std::cout << "TEXTURES:: Failed to load  the texture" << std::endl;
+        }
+        else
+        {
+            std::cout << "successfully loaded" << std::endl;
+
+            slice();
+
+            // now my textures/spritesOfTextures are populated so I can arrange them and draw them inside the container
+            arrangeTexturesInContainer();
+        }
     }
 }
 

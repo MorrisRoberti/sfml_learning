@@ -17,7 +17,8 @@ private:
 
     const void slice();
     const void arrangeTexturesInContainer();
-    void cleanup();
+    const void cleanup();
+    const void initVariables();
 
 public:
     TextureTiles();
