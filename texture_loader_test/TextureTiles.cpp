@@ -68,17 +68,28 @@ const void TextureTiles::arrangeTexturesInContainer()
 void TextureTiles::cleanup()
 {
     std::cout << "Cleanup" << std::endl;
-    for (auto p : textures)
+    if (textures.size() != 0)
     {
-        delete p;
+
+        for (auto p : textures)
+        {
+            delete p;
+        }
     }
 
-    for (auto p : spritesOfTextures)
+    if (spritesOfTextures.size() != 0)
     {
-        delete p;
+
+        for (auto p : spritesOfTextures)
+        {
+            delete p;
+        }
     }
 
-    delete textureFile;
+    if (textureFile != nullptr)
+    {
+        delete textureFile;
+    }
 }
 
 TextureTiles::TextureTiles()
@@ -88,13 +99,13 @@ TextureTiles::TextureTiles()
     textures = std::vector<sf::Texture *>();
     spritesOfTextures = std::vector<sf::Sprite *>();
 
-    textureFile = new sf::Image();
+    textureFile = nullptr;
     textureFileName = "";
     textureFileDim = sf::Vector2f(0.0f, 0.0f);
 
     singleTextureDim = 0.0f;
 
-    container = sf::RectangleShape(sf::Vector2f(0.0f, 0.0f));
+    container = sf::RectangleShape(sf::Vector2f(300.0f, 350.0f));
     container.setPosition(0.0f, 0.0f);
     container.setFillColor(sf::Color::Blue);
 }
@@ -106,7 +117,7 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize)
     textures = std::vector<sf::Texture *>();
     spritesOfTextures = std::vector<sf::Sprite *>();
 
-    textureFile = new sf::Image();
+    textureFile = nullptr;
     textureFileName = "";
     textureFileDim = sf::Vector2f(0.0f, 0.0f);
 
@@ -124,7 +135,7 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize, const std::string t
     textures = std::vector<sf::Texture *>();
     spritesOfTextures = std::vector<sf::Sprite *>();
 
-    textureFile = new sf::Image();
+    textureFile = nullptr;
 
     container = sf::RectangleShape(containerSize);
     container.setPosition(0.0f, 0.0f);
@@ -190,8 +201,6 @@ TextureTiles &TextureTiles::operator=(const TextureTiles &other)
 
     if (textureFile != other.textureFile)
     {
-
-        // i need to empty textures and sprites
         cleanup();
 
         for (auto p : other.textures)
@@ -223,7 +232,6 @@ TextureTiles &TextureTiles::operator=(TextureTiles &&other)
     if (textureFile != other.textureFile)
     {
 
-        // i need to empty textures and sprites
         cleanup();
 
         textures = std::move(other.textures);

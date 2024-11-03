@@ -5,18 +5,17 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(1000, 600), "SFML works!");
 
-    sf::Vector2f containerSize = sf::Vector2f(900.0f, 350.0f);
+    sf::Vector2f containerSize = sf::Vector2f(500.0f, 600.0f);
     sf::Vector2f textureFileDimension = sf::Vector2f(96.0f, 96.0f);
     sf::Vector2f textureFileDimension2 = sf::Vector2f(1152.0f, 1536.0f);
     sf::Vector2f textureFileDimension3 = sf::Vector2f(384.0f, 64.0f);
     sf::Vector2f textureFileDimension4 = sf::Vector2f(1344.0f, 960.0f);
 
     TextureTiles textureTiles = TextureTiles(containerSize, "all_gnomes.png", textureFileDimension, 32.0f);
-    TextureTiles t2;
-    t2 = textureTiles;
+    TextureTiles t2 = TextureTiles(std::move(textureTiles));
     t2.load("Warrior_Yellow.png", textureFileDimension2, 192);
-    t2.load("Dynamite.png", textureFileDimension3, 64.0f);
-    textureTiles.load("Torch_Red.png", textureFileDimension4, 192.0f);
+    // t2.load("Dynamite.png", textureFileDimension3, 64.0f);
+    // textureTiles.load("Torch_Red.png", textureFileDimension4, 192.0f);
 
     // textureTiles.load("Warrior_Yellow.png", textureFileDimension2, 192);
     while (window.isOpen())
@@ -31,7 +30,7 @@ int main()
         window.clear();
 
         // draw
-        textureTiles.draw(window);
+        t2.draw(window);
 
         window.display();
     }
