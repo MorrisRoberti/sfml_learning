@@ -49,16 +49,17 @@ const void TextureTiles::arrangeTexturesInContainer()
 
         // FIX: so basically i want to draw 4 textures per row inside the container
 
-        // if (j < 4)
-        // {
+        if (j < 4)
+        {
 
-        //     spritesOfTextures[i]->setPosition(j * newSingleTextureDim * textureScaling, i * newSingleTextureDim * textureScaling);
-        //     j++;
-        // }
-        // else
-        // {
-        //     j = 0;
-        // }
+            spritesOfTextures[i]->setPosition(j * newSingleTextureDim * textureScaling, tmp * newSingleTextureDim * textureScaling);
+            j++;
+        }
+        else
+        {
+            j = 0;
+            tmp++;
+        }
 
         // if (i )
         // {
