@@ -27,7 +27,6 @@ const void TextureTiles::slice()
         else
         {
             sf::Sprite *tmpSprite = new sf::Sprite(*tmp);
-            // tmpSprite->setPosition(50, i * 20);
             spritesOfTextures.push_back(tmpSprite);
             textures.push_back(tmp);
         }
@@ -39,6 +38,9 @@ const void TextureTiles::arrangeTexturesInContainer()
     sf::FloatRect containerGlobalBounds = container.getGlobalBounds();
 
     float newSingleTextureDim = containerGlobalBounds.width / 4;
+    float scaleX = 300.0f / 768.0f;         // Scale for width
+    float scaleY = 350.0f / 384.0f;         // Scale for height
+    float scale = std::min(scaleX, scaleY); // Use the smaller scale to fit
 
     float textureScaling = 0;
 
@@ -101,6 +103,8 @@ const void TextureTiles::initVariables()
     textureFileName = "";
     textureFileDim = sf::Vector2f(0.0f, 0.0f);
 
+    view = nullptr;
+
     singleTextureDim = 0.0f;
 }
 
@@ -124,6 +128,7 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize)
     container = sf::RectangleShape(containerSize);
     container.setPosition(0.0f, 0.0f);
     container.setFillColor(sf::Color::Blue);
+    view = new sf::View(sf::FloatRect(container.getPosition(), containerSize));
 }
 
 TextureTiles::TextureTiles(const sf::Vector2f containerSize, const std::string textureFileNameString, const sf::Vector2f textureFileDimension, float singleTextureDimension)
@@ -136,8 +141,10 @@ TextureTiles::TextureTiles(const sf::Vector2f containerSize, const std::string t
     container.setPosition(0.0f, 0.0f);
     container.setFillColor(sf::Color::Blue);
 
-    // do some controls to check that: textureFileDimension and sinleTextureFiles are >= and the first is >= then the second
+    view = new sf::View(sf::FloatRect(container.getPosition(), containerSize));
+    view->setViewport(sf::FloatRect(container.getPosition(), sf::Vector2f(0.3f, 0.6f)));
 
+    // do some controls to check that: textureFileDimension and singleTextureFiles are >= and the first is >= then the second
     load(textureFileNameString, textureFileDimension, singleTextureDimension);
 }
 
@@ -253,6 +260,7 @@ const void TextureTiles::update()
 
 const void TextureTiles::draw(sf::RenderTarget &window) const
 {
+    window.setView(*view);
     window.draw(container);
     for (int i = 0; i < spritesOfTextures.size(); i++)
         window.draw(*spritesOfTextures[i]);

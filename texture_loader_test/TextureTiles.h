@@ -13,6 +13,7 @@ private:
     sf::Vector2f textureFileDim; // the dimension of the file that stores the textures
     float singleTextureDim;      // the dimension of the single textures in the textureFile (the texture have to be square)
 
+    sf::View *view;
     sf::RectangleShape container;
 
     const void slice();
