@@ -97,20 +97,10 @@ const void TextureTiles::initVariables()
 const void TextureTiles::scrollDownTextures()
 {
 
-    // check if the total height of the textures THAT ARE DRAWN is <= to the viewport, in this case there is no need to scroll down
-    // if ((spritesOfTextures.size() * singleTextureDim) <= view->getSize().y)
-    // {
-    //     std::cout << "the textures don't need scrolling" << std::endl;
-    // }
     if (spritesOfTextures.back()->getPosition().y >= singleTextureDim * spritesOfTextures.back()->getScale().y)
     {
         for (int i = 0; i < spritesOfTextures.size(); i++)
         {
-
-            // make it impossible to scroll beyond last row
-            std::cout << "FIRST TEX POS: " << spritesOfTextures.front()->getPosition().y << std::endl;
-
-            // THE PROBLEM HAS TO BE HERE BECAUSE ONE OF THE TEXTURE ROWS DON'T GO UP IN THE RIGHT WAY
 
             spritesOfTextures[i]->setPosition(spritesOfTextures[i]->getPosition().x, spritesOfTextures[i]->getPosition().y - (spritesOfTextures[i]->getScale().y * singleTextureDim));
         }
@@ -281,16 +271,18 @@ const void TextureTiles::pollEvents(const sf::Event &event)
 {
     if (event.type == sf::Event::MouseWheelScrolled)
     {
-        if (event.mouseWheelScroll.delta < 0)
-        {
-            scrollDownTextures();
-            std::cout << "Scrolled Down" << std::endl;
-        }
-        else if (event.mouseWheelScroll.delta > 0)
-        {
-            scrollUpTextures();
-            std::cout << "Scrolled Up" << std::endl;
-        }
+
+        if ((singleTextureDim * spritesOfTextures.front()->getScale().y * (spritesOfTextures.size() / 3)) > view->getSize().y)
+            if (event.mouseWheelScroll.delta < 0)
+            {
+                scrollDownTextures();
+                std::cout << "Scrolled Down" << std::endl;
+            }
+            else if (event.mouseWheelScroll.delta > 0)
+            {
+                scrollUpTextures();
+                std::cout << "Scrolled Up" << std::endl;
+            }
     }
 }
 
