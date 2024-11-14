@@ -16,7 +16,6 @@ const void TextureTiles::slice()
         }
     }
 
-    int j = 0;
     for (int i = 0; i < numberOfTextures.x * numberOfTextures.y; i++)
     {
         sf::Texture *tmp = new sf::Texture();
@@ -273,12 +272,10 @@ const void TextureTiles::pollEvents(const sf::Event &event)
             if (event.mouseWheelScroll.delta < 0)
             {
                 scrollDownTextures();
-                std::cout << "Scrolled Down" << std::endl;
             }
             else if (event.mouseWheelScroll.delta > 0)
             {
                 scrollUpTextures();
-                std::cout << "Scrolled Up" << std::endl;
             }
     }
 }
