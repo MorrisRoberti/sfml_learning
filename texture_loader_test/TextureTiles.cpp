@@ -36,11 +36,11 @@ const void TextureTiles::slice()
 const void TextureTiles::arrangeTexturesInContainer()
 {
 
-    float heightOfAllRows = singleTextureDim * 3; // number of columns are 3, so i take the number of rows and multiplying it by texture height
+    float totalColumnsWidth = singleTextureDim * 3; // number of columns are 3, so i take the number of rows and multiplying it by texture height
 
-    float scale = view->getSize().x / heightOfAllRows; // Use the smaller scale to fit
+    float scale = view->getSize().x / totalColumnsWidth; // Use the smaller scale to fit
 
-    for (int i = 0, tmp = 0, j = 0; i < spritesOfTextures.size(); i++)
+    for (int i = 0; i < spritesOfTextures.size(); i++)
     {
         spritesOfTextures[i]->setScale(scale, scale);
 
@@ -92,6 +92,44 @@ const void TextureTiles::initVariables()
     view = nullptr;
 
     singleTextureDim = 0.0f;
+}
+
+const void TextureTiles::scrollDownTextures()
+{
+
+    // check if the total height of the textures THAT ARE DRAWN is <= to the viewport, in this case there is no need to scroll down
+    // if ((spritesOfTextures.size() * singleTextureDim) <= view->getSize().y)
+    // {
+    //     std::cout << "the textures don't need scrolling" << std::endl;
+    // }
+    if (spritesOfTextures.back()->getPosition().y >= singleTextureDim * spritesOfTextures.back()->getScale().y)
+    {
+        for (int i = 0; i < spritesOfTextures.size(); i++)
+        {
+
+            // make it impossible to scroll beyond last row
+            std::cout << "FIRST TEX POS: " << spritesOfTextures.front()->getPosition().y << std::endl;
+
+            // THE PROBLEM HAS TO BE HERE BECAUSE ONE OF THE TEXTURE ROWS DON'T GO UP IN THE RIGHT WAY
+
+            spritesOfTextures[i]->setPosition(spritesOfTextures[i]->getPosition().x, spritesOfTextures[i]->getPosition().y - (spritesOfTextures[i]->getScale().y * singleTextureDim));
+        }
+    }
+}
+
+const void TextureTiles::scrollUpTextures()
+{
+    if (spritesOfTextures.front()->getPosition().y < 0)
+    {
+
+        for (int i = 0; i < spritesOfTextures.size(); i++)
+        {
+
+            // make it impossible to scroll beyond first row
+            std::cout << " TEX POS: " << spritesOfTextures.front()->getPosition().y << std::endl;
+            spritesOfTextures[i]->setPosition(spritesOfTextures[i]->getPosition().x, spritesOfTextures[i]->getPosition().y + (spritesOfTextures[i]->getScale().y * singleTextureDim));
+        }
+    }
 }
 
 TextureTiles::TextureTiles()
@@ -239,6 +277,23 @@ TextureTiles &TextureTiles::operator=(TextureTiles &&other)
     return *this;
 }
 
+const void TextureTiles::pollEvents(const sf::Event &event)
+{
+    if (event.type == sf::Event::MouseWheelScrolled)
+    {
+        if (event.mouseWheelScroll.delta < 0)
+        {
+            scrollDownTextures();
+            std::cout << "Scrolled Down" << std::endl;
+        }
+        else if (event.mouseWheelScroll.delta > 0)
+        {
+            scrollUpTextures();
+            std::cout << "Scrolled Up" << std::endl;
+        }
+    }
+}
+
 const void TextureTiles::update()
 {
 }
@@ -248,7 +303,9 @@ const void TextureTiles::draw(sf::RenderTarget &window) const
     window.setView(*view);
     window.draw(container);
     for (int i = 0; i < spritesOfTextures.size(); i++)
+    {
         window.draw(*spritesOfTextures[i]);
+    }
 }
 
 const void TextureTiles::load(const std::string textureFileNameString, const sf::Vector2f textureFileDimension, float singleTextureDimension)

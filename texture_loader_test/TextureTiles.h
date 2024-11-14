@@ -20,6 +20,8 @@ private:
     const void arrangeTexturesInContainer();
     const void cleanup();
     const void initVariables();
+    const void scrollDownTextures();
+    const void scrollUpTextures();
 
 public:
     TextureTiles();
@@ -37,6 +39,8 @@ public:
     TextureTiles &operator=(const TextureTiles &other);
 
     TextureTiles &operator=(TextureTiles &&other); // move assignment
+
+    const void pollEvents(const sf::Event &event);
 
     const void update();
 
