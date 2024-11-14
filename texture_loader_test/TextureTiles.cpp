@@ -97,7 +97,7 @@ const void TextureTiles::initVariables()
 const void TextureTiles::scrollDownTextures()
 {
 
-    if (spritesOfTextures.back()->getPosition().y >= singleTextureDim * spritesOfTextures.back()->getScale().y)
+    if (spritesOfTextures.back()->getPosition().y >= (view->getSize().y))
     {
         for (int i = 0; i < spritesOfTextures.size(); i++)
         {
@@ -114,9 +114,6 @@ const void TextureTiles::scrollUpTextures()
 
         for (int i = 0; i < spritesOfTextures.size(); i++)
         {
-
-            // make it impossible to scroll beyond first row
-            std::cout << " TEX POS: " << spritesOfTextures.front()->getPosition().y << std::endl;
             spritesOfTextures[i]->setPosition(spritesOfTextures[i]->getPosition().x, spritesOfTextures[i]->getPosition().y + (spritesOfTextures[i]->getScale().y * singleTextureDim));
         }
     }
