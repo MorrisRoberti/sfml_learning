@@ -1,0 +1,6 @@
+class TextureHandler
+{
+
+private:
+public:
+};
