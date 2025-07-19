@@ -1,74 +1,64 @@
-#include <SFML/System.hpp>
+#include "Player.cpp"
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
-#include "Player.cpp"
+#include <SFML/System.hpp>
 
-class Game
-{
+class Game {
 private:
-    sf::RenderWindow *m_window;
-    float m_delta_time;
+	sf::RenderWindow* m_window;
+	float m_delta_time;
 
-    Player *mock_mario;
-    const float speed = 100.f;
+	Player* mock_mario;
+	const float speed = 100.f;
 
 public:
-    Game()
-    {
-        init();
-        loop();
-    }
+	Game() {
+		init();
+		loop();
+	}
 
-    void init()
-    {
-        m_window = new sf::RenderWindow(sf::VideoMode(800, 600), "Mock Mario", sf::Style::Default);
-        m_window->setFramerateLimit(60); // oppure 120
+	void init() {
+		m_window = new sf::RenderWindow(sf::VideoMode({ 800, 600 }), "Mock Mario", sf::Style::Default);
+		m_window->setFramerateLimit(60); // oppure 120
 
-        mock_mario = new Player();
-    }
+		mock_mario = new Player();
+	}
 
-    void event_handling()
-    {
-        sf::Event event;
-        while (m_window->pollEvent(event))
-        {
+	void event_handling() {
+		while (const std::optional event = m_window->pollEvent()) {
 
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-                m_window->close();
+			if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>(); keyPressed != nullptr) {
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-                mock_mario->move(m_delta_time * speed, 0);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-                mock_mario->move(m_delta_time * -speed, 0);
-        }
-    }
+				if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+					m_window->close();
+			}
 
-    ~Game()
-    {
+		}
+	}
 
-        delete mock_mario;
-        delete m_window;
-    }
+	~Game() {
 
-    void update()
-    {
-        mock_mario->update();
-    }
+		delete mock_mario;
+		delete m_window;
+	}
 
-    void loop()
-    {
-        sf::Clock clock;
-        while (m_window->isOpen())
-        {
-            event_handling();
-            m_delta_time = clock.restart().asSeconds();
+	void update() {
+		mock_mario->update(m_delta_time);
+	}
 
-            m_window->clear();
+	void loop() {
+		sf::Clock clock;
+		while (m_window->isOpen()) {
+			event_handling();
+			m_delta_time = clock.restart().asSeconds();
 
-            update();
-            mock_mario->draw(m_window);
+			m_window->clear();
 
-            m_window->display();
-        }
-    }
+			update();
+
+			mock_mario->draw(m_window);
+
+			m_window->display();
+		}
+	}
 };

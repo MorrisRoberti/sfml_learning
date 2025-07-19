@@ -1,80 +1,76 @@
-#include <SFML/Graphics.hpp>
 #include <iostream>
+#include <SFML/Graphics.hpp>
+#include "Animation.cpp"
 
 class Player
 {
 private:
-    sf::Sprite *m_sprite;
-    std::string m_texture_path;
-    sf::Texture *m_texture;
-    enum statetype
-    {
-        IDLE_R,
-        IDLE_L,
-        IDLE,
-        MOVING,
-        JUMPING
-    } m_state;
+	sf::Sprite *m_sprite;
+	std::string m_texture_path;
+	sf::Texture *m_texture;
+	Animation *m_animation;
 
-    // FSM
-    void change_state(float x, float y)
-    {
-
-        if (x > 0)
-            m_state = IDLE_R;
-        if (x < 0)
-            m_state = IDLE_L;
-    }
-
-    void update_texture()
-    {
-        switch (m_state)
-        {
-        case IDLE_R:
-            m_sprite->setTextureRect(sf::IntRect(sf::Vector2i(203, 0), sf::Vector2i(29, 29)));
-            break;
-        case IDLE_L:
-            m_sprite->setTextureRect(sf::IntRect(sf::Vector2i(174, 0), sf::Vector2i(29, 29)));
-            break;
-        default:
-            m_sprite->setTextureRect(sf::IntRect(sf::Vector2i(203, 0), sf::Vector2i(29, 29)));
-            break;
-        }
-    }
+	const float m_speed = 100.f;
+	bool m_face_right;
+	unsigned int m_row;
 
 public:
-    Player()
-    {
+	Player()
+	{
 
-        m_texture_path = "assets/mario_texture.png";
-        m_texture = new sf::Texture();
+		m_face_right = true;
+		m_row = 0;
 
-        if (!m_texture->loadFromFile(m_texture_path))
-            std::cerr << "PLAYER:: Error loading the texture";
+		m_texture_path = "assets/Warrior_Yellow.png";
+		m_texture = new sf::Texture();
 
-        m_sprite = new sf::Sprite(*m_texture, sf::IntRect(sf::Vector2i(203, 0), sf::Vector2i(29, 29)));
-        m_state = IDLE_R;
-    }
+		if (!m_texture->loadFromFile(m_texture_path))
+			std::cerr << "PLAYER:: Error loading the texture";
 
-    ~Player()
-    {
-        delete m_sprite;
-        delete m_texture;
-    }
+		m_animation = new Animation(m_texture, sf::Vector2u({6, 8}), 0.17);
+		m_sprite = new sf::Sprite(*m_texture, sf::IntRect(sf::Vector2i(203, 0), sf::Vector2i(29, 29)));
+	}
 
-    void move(float offset_x, float offset_y)
-    {
-        m_sprite->move(offset_x, offset_y);
-        change_state(offset_x, offset_y);
-    }
+	~Player()
+	{
+		delete m_sprite;
+		delete m_texture;
+		delete m_animation;
+	}
 
-    void update()
-    {
-        update_texture();
-    }
+	void update(float delta_time)
+	{
 
-    void draw(sf::RenderWindow *window)
-    {
-        window->draw(*m_sprite);
-    }
+		sf::Vector2f movement({0.f, 0.f});
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D))
+			movement.x += delta_time * m_speed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
+			movement.x -= delta_time * m_speed;
+
+		// se il movimento orizzontale e' nullo allora mi posiziono nella prima riga, cioe' quella delle animazioni idle
+		if (movement.x == 0.0f)
+			m_row = 0;
+		else
+		{
+			// altrimenti vado nella riga successiva e se mi muovo a destra metto destra altrimenti metto sinistra
+			m_row = 1;
+			if (movement.x > 0)
+				m_face_right = true;
+			else
+				m_face_right = false;
+		}
+
+		// aggiorno l'animazione con i nuovi valori e do al giocatore la nuova texture calcolata
+		m_animation->update(m_row, delta_time, m_face_right);
+		m_sprite->setTextureRect(m_animation->m_texture_rect);
+
+		// muovo il giocatore
+		m_sprite->move(movement);
+	}
+
+	void draw(sf::RenderWindow *window)
+	{
+		window->draw(*m_sprite);
+	}
 };
