@@ -16,8 +16,6 @@ private:
 	} m_state;
 
 
-	sf::Keyboard::Scancode* m_keypressed;
-
 	const float m_speed = 100.f;
 	bool m_face_right;
 	unsigned int m_row;
@@ -45,14 +43,10 @@ public:
 		delete m_sprite;
 		delete m_texture;
 		delete m_animation;
-		delete m_keypressed;
 	}
 
-	void setKeypressed(sf::Keyboard::Scancode keypressed) {
-		sf::Keyboard::Scancode* k = new sf::Keyboard::Scancode(keypressed);
-		m_keypressed = k;
-	}
 
+	// FSM molto semplice
 	void update_state(State new_state) {
 		if (m_state == new_state)
 			return;
@@ -67,6 +61,7 @@ public:
 				m_row = 1;
 				break;
 			case State::HITTING:
+				m_animation->resetCurrentTexturePos(); // se voglio colpire resetto le texture per evitare che l'animazione del colpo non parta dall'inizio
 				m_row = 2;
 				break;
 
@@ -75,19 +70,20 @@ public:
 				break;
 		}
 
-
-		if (m_state == State::IDLE)
-			std::cout << "IDLE" << std::endl;
-		else
-			std::cout << (m_state == State::RUNNING ? "RUNNING" : "HITTING") << std::endl;
 	};
 
+	// gestisco gli input singoli
+	void input_handle(const sf::Event::KeyPressed* keyPressed) {
+		if (keyPressed->scancode == sf::Keyboard::Scancode::E) {
+			update_state(State::HITTING);
+		}
 
+	}
 
 	void update(float delta_time) {
 
 		// change state
-		State new_state;
+		State new_state = m_state;
 
 		sf::Vector2f movement({ 0.f, 0.f });
 
@@ -110,22 +106,15 @@ public:
 		}
 
 
-		// ho bisogno di catturare un solo click e devo aspettare che l'animazione del colpo sia terminata
-		if (m_keypressed != nullptr && *m_keypressed == sf::Keyboard::Scancode::E && m_state != State::HITTING)
-			new_state = State::HITTING;
-
-
-		update_state(new_state);
-
+		if (m_state != State::HITTING)
+			update_state(new_state);
+		else if (m_state == State::HITTING && m_animation->isOver()) { // faccio si che l'animazione di attacco duri fino alla fine senza interruzione
+			update_state(State::IDLE);
+		}
 
 		// aggiorno l'animazione con i nuovi valori e do al giocatore la nuova texture calcolata
 		m_animation->update(m_row, delta_time, m_face_right);
 		m_sprite->setTextureRect(m_animation->m_texture_rect);
-
-		if (m_state == State::HITTING && (m_animation->getCurrentImageX() + 1) % 5 == 0) {
-			delete m_keypressed;
-			m_keypressed = nullptr;
-		}
 
 		// muovo il giocatore
 		m_sprite->move(movement);

@@ -36,6 +36,14 @@ public:
 		return m_current_image.x;
 	}
 
+	void resetCurrentTexturePos() {
+		m_current_image.x = 0;
+	}
+
+	bool isOver() {
+		return m_current_image.x == m_image_count.x - 1;
+	}
+
 	void update(int row, float delta_time, bool face_right) {
 
 		// imposto la row attuale, perche' ad esempio quella in cui ho le texture del movimento e' la 1
@@ -52,6 +60,7 @@ public:
 			// faccio in modo di non uscire dalla texture
 			m_current_image.x = (m_current_image.x + 1) % m_image_count.x;
 		}
+
 
 		// prendo l'immagine attuale nella riga m_current_image.y e nella colonna m_current_image.x
 		// e le moltiplico per la larghezza e altezza di un singolo texture rect, in questo modo mi prendo
@@ -74,5 +83,6 @@ public:
 			m_texture_rect.position.x = (m_current_image.x + 1) * abs(m_texture_rect.size.x);
 			m_texture_rect.size.x = -abs(m_texture_rect.size.x);
 		}
+
 	}
 };
